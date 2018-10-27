@@ -1,7 +1,7 @@
 {
-    "name": "getcandy/candy-hub",
+    "name": "surpaimb/candy-hub",
     "description": "Ecommerce API",
-    "keywords": ["ecommerce", "getcandy-hub", "laravel"],
+    "keywords": ["ecommerce", "getcandy-hub", "laravel, surpaimb"],
     "license": "MIT",
     "type": "project",
     "require": {
