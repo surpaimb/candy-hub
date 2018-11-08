@@ -4,7 +4,7 @@
 @endsection
 
 @section('header_title')
-    <small>普安寺</small>
+    <small>{{trans('titles.appName')}}</small>
     <h1>Dashboard</h1>
 @endsection
 

@@ -9,5 +9,7 @@ return [
     'categories' => 'Categories',
     'shipping' => 'Shipping',
     'discounts' => 'Discounts',
-    'customers' => 'Customers'
+    'customers' => 'Customers',
+    'appTitle' => 'Puan Temple',
+    'appName' => 'Puan Temple'
 ];
