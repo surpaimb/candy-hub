@@ -59,7 +59,7 @@
         },
         computed: {
             dropzoneUrl() {
-                return '/api/v1/products/' + this.product.id + '/assets';
+                return '/api/products/' + this.product.id + '/assets';
             }
         },
         props: {

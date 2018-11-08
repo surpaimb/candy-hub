@@ -4,7 +4,7 @@
 @endsection
 
 @section('header_title')
-    <small>GetCandy</small>
+    <small>普安寺</small>
     <h1>Dashboard</h1>
 @endsection
 

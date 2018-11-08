@@ -113,9 +113,13 @@ const store = new Vuex.Store({
 config.get('channels').then(response => {
   channels = response.data;
   var defaultChannel = _.filter(channels, function(channel) {
+    // console.log(channel.default);
     return channel.default;
   });
+  // console.log(defaultChannel[0]);
   store.commit('setDefaultChannel', defaultChannel[0]);
+  // console.log(store.getters.getDefaultChannel);
+
 });
 
 config.get('taxes').then(response => {

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="channel" content="@channel()">
     <title>GetCandy</title>
 
     <link rel="shortcut icon" type="image/png" href="/images/favicon.png">
@@ -34,7 +34,7 @@
     <div class="row">
       <div class="col-xs-12 col-md-5">
         <div class="login-form">
-          <img src="{{ url('hub/images/logo/getcandy.png') }}" class="logo" alt="GetCandy">
+          <img src="{{ url('images/logo/getcandy_sm.png') }}" class="logo" alt="普安寺">
 
           @if(\Session::has('unauth'))
             <div class="alert alert-danger">
@@ -91,6 +91,6 @@
   </div>
     <div class="main-purple-overlay"></div>
 
-    <script src="{{ url('hub/js/app.js') }}"></script>
+    <script src="{{ url('js/app.js') }}"></script>
   </body>
 </html>

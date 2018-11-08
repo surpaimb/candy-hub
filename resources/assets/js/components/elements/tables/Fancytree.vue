@@ -292,7 +292,6 @@
             </tbody>
         </table>
         <div class="text-center">
-            <candy-table-paginate :pagination="pagination" @change="changePage"></candy-table-paginate>
         </div>
 
 

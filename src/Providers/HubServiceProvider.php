@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Validator;
 use View;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
-use GetCandy\Hub\Http\Middleware\HubAccess;
+use GetCandy\Http\Middleware\HubAccess;
 use Illuminate\Support\Facades\Blade;
 
 
