@@ -21,7 +21,7 @@
             loadCustomers() {
                 apiRequest.send('get', '/customers', [], this.params)
                     .then(response => {
-                        console.log(response.data);
+//                        console.log(response.data);
                         this.customers = response.data;
                         this.pagination = response.meta.pagination;
                         this.loaded = true;
@@ -88,8 +88,8 @@
                         <tr class="clickable" v-for="customer in customers">
                             <td @click="loadCustomer(customer.id)">{{ customer.id }}</td>
                             <td @click="loadCustomer(customer.id)">
-                                <template v-if="customer.details.data.firstname">
-                                    {{ customer.details.data.firstname }} {{ customer.details.data.lastname }}
+                                <template v-if="customer.phone_number">
+                                    {{ customer.phone_number }}
                                 </template>
                                 <span v-else class="text-muted"><small>-</small></span>
                             </td>

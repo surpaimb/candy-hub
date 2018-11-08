@@ -54,7 +54,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { VTooltip } from 'v-tooltip'
 import VueLazyload from 'vue-lazyload'
+import VueI18n from 'vue-i18n'
 
+Vue.use(VueI18n);
 Vue.use(Vuex);
 Vue.use(VueLazyload, {
   lazyComponent: true
@@ -139,6 +141,19 @@ CandyHelpers.install = function (Vue, options) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 };
+
+const i18n = new VueI18n({
+  locale: 'zh',
+  messages:{
+    'zh':{
+      hello:'你好'
+    },
+    'en':{
+      hello:'hello'
+    }
+  }
+});
+
 
 const app = new Vue({
     el: '#app',

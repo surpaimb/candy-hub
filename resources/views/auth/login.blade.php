@@ -34,7 +34,7 @@
     <div class="row">
       <div class="col-xs-12 col-md-5">
         <div class="login-form">
-          <img src="{{ url('images/logo/getcandy_sm.png') }}" class="logo" alt="普安寺">
+          <img src="{{ url('hub/images/logo/getcandy_sm.png') }}" class="logo" alt="普安寺">
 
           @if(\Session::has('unauth'))
             <div class="alert alert-danger">
