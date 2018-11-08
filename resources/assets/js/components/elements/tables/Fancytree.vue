@@ -216,6 +216,7 @@
             },
             reloadData: function() {
                 apiRequest.send('get', this.sourceURL, [], {
+                    view:'tree',
                     per_page: 15,
                     current_page: this.pagination.current_page
                 })
@@ -229,6 +230,7 @@
             },
             loadData: function() {
                 apiRequest.send('get', this.sourceURL, [], {
+                    view:'tree',
                     per_page: 15,
                     current_page: this.pagination.current_page
                 })

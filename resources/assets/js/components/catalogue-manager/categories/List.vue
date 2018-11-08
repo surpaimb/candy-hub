@@ -17,7 +17,8 @@
                     per_page: 25,
                     current_page: 1,
                     keywords: '',
-                    includes: 'routes,assets'
+                    includes: 'routes,assets',
+                    view:'list'
                 },
                 params: {
                     type: 'category',
@@ -85,6 +86,7 @@
         },
         methods: {
             loadCategories() {
+                this.requestParams.view = this.currentView === 'list-view' ? 'list' : 'tree';
                 this.categoriesLoaded = false;
                 this.request.send('get', '/categories',[], this.requestParams)
                     .then(response => {
