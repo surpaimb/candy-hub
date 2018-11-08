@@ -62,12 +62,12 @@
         <candy-modal title="Create Product" v-show="create" size="modal-md" @closed="create = false">
             <div slot="body">
                 <div class="form-group">
-                    <label for="name">Category name</label>
+                    <label for="name">{{$t('category.name')}}</label>
                     <input type="text" class="form-control" id="name" v-model="name" @input="request.clearError('name')">
                     <span class="text-danger" v-if="request.getError('name')" v-text="request.getError('name')"></span>
                 </div>
                 <div class="form-group">
-                    <label for="redirectURL">Category URL</label>
+                    <label for="redirectURL">{{$t('category.url')}}</label>
                     <input type="text" id="redirectURL" class="form-control" v-model="model.url">
                     <span class="text-info" v-if="model.url">Your url will be sanitized to: <code>{{ url }}</code></span>
                     <span class="text-danger" v-if="request.getError('url')" v-text="request.getError('url')"></span>

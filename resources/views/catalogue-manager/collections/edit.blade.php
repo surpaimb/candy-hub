@@ -14,7 +14,7 @@
       element="collection"
       endpoint="/collections/{{ $id }}"
       id="{{ $id }}"
-      redirect="/catalogue-manager/collections"
+      redirect="/hub/catalogue-manager/collections"
       style="display: inline-block;"
     ></candy-delete>
     <candy-button style="display: inline-block;" event="save-collection">Save Collection</candy-button>

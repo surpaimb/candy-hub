@@ -143,20 +143,18 @@ CandyHelpers.install = function (Vue, options) {
 };
 
 const i18n = new VueI18n({
-  locale: 'zh',
+  locale:'zh',
+  fallbackLocale: 'zh',
   messages:{
-    'zh':{
-      hello:'你好'
-    },
-    'en':{
-      hello:'hello'
-    }
+    zh: require('../i18n/zh.json'),
+    en: require('../i18n/en.json')
   }
 });
 
 
 const app = new Vue({
     el: '#app',
+    i18n,
     store,
     data: {
       title: ''

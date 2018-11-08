@@ -14,7 +14,7 @@
       element="category"
       endpoint="/categories/{{ $id }}"
       id="{{ $id }}"
-      redirect="/catalogue-manager/categories"
+      redirect="/hub/catalogue-manager/categories"
       warning="You will lose any child categories along with any associations"
       style="display: inline-block;"
     ></candy-delete>
