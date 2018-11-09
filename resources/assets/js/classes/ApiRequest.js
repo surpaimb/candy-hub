@@ -79,7 +79,7 @@ class ApiRequest {
         let paramsArr = {'params': params};
 
         return new Promise((resolve, reject) => {
-            axios.get('/api/v1/products', paramsArr)
+            axios.get('/api/products', paramsArr)
                 .then(response => {
                     resolve((flatten) ? this.productFlatify(response.data) : response.data);
                 })
@@ -95,7 +95,7 @@ class ApiRequest {
         let paramsArr = {'params': params};
 
         return new Promise((resolve, reject) => {
-            axios.get('/api/v1/collections', paramsArr)
+            axios.get('/api/collections', paramsArr)
                 .then(response => {
                     resolve(response.data);
                 })
@@ -163,7 +163,7 @@ class ApiRequest {
      * @return {String}
      */
     getUrl(path) {
-        return '/api/v1/' + path.replace(/^\/|\/$/g, '');
+        return '/api/' + path.replace(/^\/|\/$/g, '');
     }
 }
 

@@ -61,7 +61,7 @@
         },
         computed: {
             dropzoneUrl() {
-                return '/api/v1/assets';
+                return '/api/assets';
             }
         },
         props: {

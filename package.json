@@ -10,6 +10,7 @@
     "watch-development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
+    "@kazupon/vue-i18n-loader": "^0.3.0",
     "axios": "^0.15.3",
     "bootstrap-datepicker": "^1.7.0",
     "bootstrap-sass": "^3.3.7",
@@ -42,10 +43,12 @@
     "nestable2": "^1.6.0",
     "selectize": "^0.12.4",
     "sortablejs": "^1.7.0",
+    "upath": "^1.1.0",
     "v-tooltip": "^2.0.0-rc.31",
     "v2-datepicker": "^3.1.0",
     "vue-drag-and-drop-list": "^1.0.0",
     "vue-flatpickr-component": "^2.4.1",
+    "vue-i18n": "^8.3.1",
     "vue-lazyload": "^1.2.1",
     "vue-multiselect": "^2.0.8",
     "vue-rangedate-picker": "^0.3.4",

@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 use View;
 
+
 class HubServiceProvider extends ServiceProvider
 {
     /**

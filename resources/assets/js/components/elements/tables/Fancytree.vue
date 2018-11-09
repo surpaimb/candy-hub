@@ -218,7 +218,7 @@
                 return '<a data-parent-id="'+ parentID +'" data-parent-name="'+ parentName +'" class="btn btn-default modal-button"><i class="fa fa-plus"></i> Create Subcategory</a>';
             },
             getImage: function(data) {
-                let url = _.get(data, ['assets', 0, 'url'], '/candy-hub/images/placeholder/no-image.svg');
+                let url = _.get(data, ['assets', 0, 'url'], '/hub/images/placeholder/no-image.svg');
                 return '<img class="fancytree-image" src="' + url + '" >';
             },
             getAttribute: function(data, attribute) {
@@ -226,6 +226,7 @@
             },
             reloadData: function() {
                 apiRequest.send('get', this.sourceURL, [], {
+                    view:'tree',
                     per_page: 15,
                     current_page: this.pagination.current_page,
                     tree: true
@@ -312,7 +313,6 @@
             </tbody>
         </table>
         <div class="text-center">
-            <candy-table-paginate :pagination="pagination" @change="changePage"></candy-table-paginate>
         </div>
 
 

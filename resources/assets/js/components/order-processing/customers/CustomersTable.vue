@@ -21,6 +21,7 @@
             loadCustomers() {
                 apiRequest.send('get', '/customers', [], this.params)
                     .then(response => {
+//                        console.log(response.data);
                         this.customers = response.data;
                         this.pagination = response.meta.pagination;
                         this.loaded = true;

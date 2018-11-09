@@ -11,7 +11,7 @@
                 <input type="radio" name="layouts" :id="layout.id" :value="layout.id" v-model="chosen" @change="update">
                 <label :for="layout.id">
                 <span class="title">{{ layout.name }} <a href="#" class="btn btn-default btn-action" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a></span>
-                <span class="layout"><img src="/candy-hub/images/placeholder/no-image.svg" alt="Layout title"></span>
+                <span class="layout"><img src="/hub/images/placeholder/no-image.svg" alt="Layout title"></span>
                 <span class="layout-content">
                     <span class="description">A brief description on the product layout, benefits etc.</span>
                 </span>

@@ -6,7 +6,7 @@
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <meta name="channel" content="@channel()">
 
-    <title>@if(isset($title)){{ $title }} -@endif GetCandy</title>
+    <title>@if(isset($title)){{ $title }} -@endif {{trans('titles.appTitle')}}</title>
     @routes
     @include('hub::partials.head')
 

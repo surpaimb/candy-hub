@@ -55,6 +55,7 @@
                     CandyEvent.$emit('notification', {
                         level: 'success'
                     });
+                    console.log('delete endpoint');
                     window.location = this.redirect;
                 }).catch(response => {
                     CandyEvent.$emit('notification', {

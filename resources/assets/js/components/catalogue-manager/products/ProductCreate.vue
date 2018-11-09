@@ -109,7 +109,7 @@
 
 
                 <div class="form-group">
-                    <label for="redirectURL">Product family</label>
+                    <label for="redirectURL">Product family 1</label>
                     <select name="" id="" class="form-control" v-model="product.family_id">
                         <option v-for="family in families" :value="family.id">{{ family.label }}</option>
                     </select>

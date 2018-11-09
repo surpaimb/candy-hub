@@ -54,7 +54,9 @@ import Vuex from 'vuex'
 import { VTooltip } from 'v-tooltip'
 import VueLazyload from 'vue-lazyload'
 import Language from './services/Locale/Language';
+import VueI18n from 'vue-i18n'
 
+Vue.use(VueI18n);
 Vue.use(Vuex);
 Vue.use(VueLazyload, {
   lazyComponent: true
@@ -113,9 +115,13 @@ const store = new Vuex.Store({
 config.get('channels').then(response => {
   channels = response.data;
   var defaultChannel = _.filter(channels, function(channel) {
+    // console.log(channel.default);
     return channel.default;
   });
+  // console.log(defaultChannel[0]);
   store.commit('setDefaultChannel', defaultChannel[0]);
+  // console.log(store.getters.getDefaultChannel);
+
 });
 
 config.get('taxes').then(response => {
@@ -160,8 +166,19 @@ Vue.component('candy-product-family-delete', require('./components/catalogue-man
 
 Vue.component('candy-order-status-select', require('./components/elements/forms/inputs/OrderStatuses.vue'));
 
+const i18n = new VueI18n({
+  locale:'zh',
+  fallbackLocale: 'zh',
+  messages:{
+    zh: require('../i18n/zh.json'),
+    en: require('../i18n/en.json')
+  }
+});
+
+
 const app = new Vue({
     el: '#app',
+    i18n,
     store,
     data: {
       title: ''
