@@ -13,7 +13,7 @@ export default {
         return new Promise((resolve, reject) => {
             axios({
                 method: 'GET',
-                url: '/api/v1/customers/groups',
+                url: '/api/customers/groups',
                 headers: {
                     'Accept': 'application/json'
                 }

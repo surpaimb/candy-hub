@@ -105,7 +105,7 @@
               <div class="col-xs-12 col-md-4">
                 <a href="" class="variant-option-img">
                   <div class="change-img">
-                    <img src="/candy-hub/images/placeholder/no-image.svg" alt="Placeholder" class="placeholder">
+                    <img src="/hub/images/placeholder/no-image.svg" alt="Placeholder" class="placeholder">
                     Change image
                   </div>
                 </a>
@@ -273,7 +273,7 @@
                     <img src="img/placeholder/product.jpg" alt="Aquacomb">
                   </div>
                   <div class="variant-img" v-else>
-                    <img src="/candy-hub/images/placeholder/no-image.svg" alt="Placeholder">
+                    <img src="/hub/images/placeholder/no-image.svg" alt="Placeholder">
                   </div>
                   <div class="variant-options">
                     <template v-for="(option, label, index) in v.options">

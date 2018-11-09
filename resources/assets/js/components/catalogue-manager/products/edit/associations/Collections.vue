@@ -119,7 +119,7 @@
                 <tbody>
                     <tr v-for="collection in collections" :key="collection.id">
                         <td width="80">
-                            <img src="/candy-hub/images/placeholder/no-image.svg" :alt="collection|attribute('name')">
+                            <img src="/hub/images/placeholder/no-image.svg" :alt="collection|attribute('name')">
                         </td>
                         <td>
                             {{ collection|attribute('name') }}

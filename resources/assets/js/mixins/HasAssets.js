@@ -9,7 +9,7 @@ export default {
             if (item.thumbnail) {
                 return item.thumbnail.data.thumbnail;
             }
-            return '/candy-hub/images/placeholder/no-image.png';
+            return '/hub/images/placeholder/no-image.png';
         }
     }
 }

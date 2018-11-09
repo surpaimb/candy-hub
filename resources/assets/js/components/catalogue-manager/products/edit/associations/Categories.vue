@@ -51,7 +51,7 @@
               if (product.thumbnail) {
                   return product.thumbnail.data.thumbnail;
               }
-              return '/candy-hub/images/placeholder/no-image.svg';
+              return '/hub/images/placeholder/no-image.svg';
             },
             getRoute(data) {
                 let slug = '';
@@ -173,7 +173,7 @@
                 <tbody>
                     <tr v-for="category in productCategories">
                         <td width="80">
-                            <img src="/candy-hub/images/placeholder/no-image.svg" :alt="getAttribute(category, 'name')">
+                            <img src="/hub/images/placeholder/no-image.svg" :alt="getAttribute(category, 'name')">
                         </td>
                         <td>
                             {{ getAttribute(category, 'name') }}

@@ -12,7 +12,7 @@ export default {
             this.fetching = true;
             axios({
                 method: 'GET',
-                url: '/api/v1/currencies',
+                url: '/api/currencies',
                 headers: {
                     'Accept': 'application/json'
                 }

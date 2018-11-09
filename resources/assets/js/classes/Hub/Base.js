@@ -31,7 +31,7 @@ export default class Base {
     resolve(method, endpoint, data) {
         let config = {
             method: method,
-            url: '/api/v1/' + endpoint.replace(/^\/|\/$/g, ''),
+            url: '/api/' + endpoint.replace(/^\/|\/$/g, ''),
             data: data,
             params: this.params,
             headers: {
