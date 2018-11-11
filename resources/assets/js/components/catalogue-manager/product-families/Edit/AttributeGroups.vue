@@ -8,9 +8,9 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th width="25%">Name</th>
-                                    <th width="25%">Handle</th>
-                                    <th width="25%">Type</th>
+                                    <th width="25%">{{$t('product.Name')}}</th>
+                                    <th width="25%">{{$t('product.Handle')}}</th>
+                                    <th width="25%">{{$t('product.Type')}}</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -20,7 +20,7 @@
                                     <td><code>{{ attribute.handle }}</code></td>
                                     <td>{{ attribute.type }}</td>
                                     <td>
-                                        <a href="#">View</a>
+                                        <a href="#">{{$t('product.View')}}</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -33,18 +33,17 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            groups: {
-                type: Array,
-                default() {
-                    return [];
-                }
-            }
-        }
-    }
+export default {
+  props: {
+    groups: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

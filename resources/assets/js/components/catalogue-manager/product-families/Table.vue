@@ -1,47 +1,46 @@
 <script>
-    import HasGroups from '../../../mixins/HasGroups';
-    export default {
-        mixins: [
-            HasGroups,
-        ],
-        data() {
-            return {
-                loaded: false,
-                families: [],
-                lang: locale.current(),
-                params: {
-                    per_page: 50,
-                    includes: 'attribute_groups',
-                    page: 1
-                },
-                pagination: {}
-            }
-        },
-        mounted() {
-            this.load();
-            CandyEvent.$on('product-family-added', event => {
-                this.load();
-            });
-        },
-        methods: {
-            load() {
-                apiRequest.send('get', '/product-families', [], this.params)
-                    .then(response => {
-                        this.families = response.data;
-                        this.pagination = response.meta.pagination;
-                        this.loaded = true;
-                    });
-            },
-            edit(id) {
-                return route('hub.product-families.edit', id);
-            },
-            changePage(page) {
-                this.loaded = false;
-                this.params.page = page;
-                this.loadCustomers();
-            }
-        }
-    }
+import HasGroups from '../../../mixins/HasGroups';
+export default {
+  mixins: [HasGroups],
+  data() {
+    return {
+      loaded: false,
+      families: [],
+      lang: locale.current(),
+      params: {
+        per_page: 50,
+        includes: 'attribute_groups',
+        page: 1,
+      },
+      pagination: {},
+    };
+  },
+  mounted() {
+    this.load();
+    CandyEvent.$on('product-family-added', event => {
+      this.load();
+    });
+  },
+  methods: {
+    load() {
+      apiRequest
+        .send('get', '/product-families', [], this.params)
+        .then(response => {
+          this.families = response.data;
+          this.pagination = response.meta.pagination;
+          this.loaded = true;
+        });
+    },
+    edit(id) {
+      return route('hub.product-families.edit', id);
+    },
+    changePage(page) {
+      this.loaded = false;
+      this.params.page = page;
+      this.loadCustomers();
+    },
+  },
+};
 </script>
 
 <template>
@@ -53,11 +52,11 @@
                 <table class="table table-striped collection-table">
                     <thead>
                         <tr>
-                            <th width="8%">ID</th>
-                            <th>Name</th>
-                            <th>No. of Products</th>
-                            <th>No. of Attributes</th>
-                            <th>Attribute groups</th>
+                            <th width="8%">{{$t('product.ID')}}</th>
+                            <th>{{$t('product.Name')}}</th>
+                            <th>{{$t('product.NoOfProducts')}}</th>
+                            <th>{{$t('product.NoOfAttributes')}}</th>
+                            <th>{{$t('product.AttributeGroups')}}</th>
                         </tr>
                     </thead>
                     <tbody v-if="loaded">

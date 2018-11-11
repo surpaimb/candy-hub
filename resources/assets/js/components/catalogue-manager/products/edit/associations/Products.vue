@@ -1,159 +1,168 @@
 <script>
-    export default {
-        data() {
-            return {
-              request: apiRequest,
-              selected: [],
-              results: [],
-              types: [],
-              associations : [],
-              addAssociationModal : false,
-              toDelete : {},
-              filter: '',
-              showRemoval : false,
-              loading : false,
-              products: [],
-              requestParams: {
-                per_page: 6,
-                current_page: 1,
-                keywords: '',
-                type: 'product'
-              },
-              meta: []
-            }
-        },
-        props: {
-          product: {
-            type: Object
+export default {
+  data() {
+    return {
+      request: apiRequest,
+      selected: [],
+      results: [],
+      types: [],
+      associations: [],
+      addAssociationModal: false,
+      toDelete: {},
+      filter: '',
+      showRemoval: false,
+      loading: false,
+      products: [],
+      requestParams: {
+        per_page: 6,
+        current_page: 1,
+        keywords: '',
+        type: 'product',
+      },
+      meta: [],
+    };
+  },
+  props: {
+    product: {
+      type: Object,
+    },
+  },
+  mounted() {
+    this.associations = this.product.associations.data;
+
+    this.request.send('GET', 'associations/groups').then(response => {
+      this.types = response.data;
+    });
+
+    _.each(this.associations, item => {
+      this.selected.push(item.association.data.id);
+    });
+
+    Dispatcher.add('product-associations', this);
+  },
+  methods: {
+    /**
+     *
+     * Listing Methods
+     *
+     */
+    getAssociations(type) {
+      if (type) {
+        return this.associations.filter(item => {
+          if (type == item.type.data.handle) {
+            return true;
+          } else {
+            return false;
           }
-        },
-        mounted() {
-          this.associations = this.product.associations.data;
-
-          this.request.send('GET', 'associations/groups').then(response => {
-            this.types = response.data;
+        });
+      }
+      return this.associations;
+    },
+    showRemovalModal(item) {
+      this.toDelete = item;
+      this.showRemoval = true;
+    },
+    deleteAssociation() {
+      let product = this.associations[this.toDelete].association.data.id;
+      this.request
+        .send('DELETE', 'products/' + this.product.id + '/associations', {
+          associations: product,
+        })
+        .then(response => {
+          CandyEvent.$emit('notification', {
+            level: 'success',
+            message: 'Association removed',
           });
-
-          _.each(this.associations, item => {
-            this.selected.push(item.association.data.id);
+          this.associations.splice(this.toDelete, 1);
+          this.toDelete = null;
+          this.showRemoval = false;
+        });
+    },
+    save() {
+      // Map it out so our API can understand it.
+      let relations = _.map(this.associations, item => {
+        return {
+          association_id: item.association.data.id,
+          type: item.type.data.id,
+        };
+      });
+      this.request
+        .send('POST', 'products/' + this.product.id + '/associations', {
+          relations: relations,
+        })
+        .then(response => {
+          CandyEvent.$emit('notification', {
+            level: 'success',
           });
-
-          Dispatcher.add('product-associations', this);
+          this.addAssociationModal = false;
+          this.results = [];
+          this.keywords = '';
+        });
+    },
+    /**
+     *
+     * Modal Methods
+     *
+     */
+    showProductAssociationModal() {
+      this.addAssociationModal = true;
+    },
+    changePage(page) {
+      this.results = [];
+      this.loading = true;
+      this.requestParams.current_page = page;
+      this.getResults(this.keywords);
+    },
+    getResults(keywords) {
+      this.requestParams.keywords = this.keywords;
+      let results = this.request
+        .send('GET', 'search', {}, this.requestParams)
+        .then(response => {
+          this.results = response.data;
+          this.requestParams.total_pages = response.meta.pagination.total_pages;
+          this.meta = response.meta;
+          this.loading = false;
+        });
+    },
+    productThumbnail(product) {
+      if (product.thumbnail) {
+        return product.thumbnail.data.thumbnail;
+      }
+      return '/hub/images/placeholder/no-image.svg';
+    },
+    alreadyLinked(product) {
+      return this.selected.contains(product.id);
+    },
+    assign(product) {
+      this.selected.push(product.id);
+      let association = {
+        type: {
+          data: this.types[0],
         },
-        methods: {
-          /**
-           *
-           * Listing Methods
-           *
-           */
-          getAssociations(type) {
-            if (type) {
-              return this.associations.filter(item => {
-                if (type == item.type.data.handle) {
-                  return true;
-                } else {
-                  return false;
-                }
-              });
-            }
-            return this.associations;
-          },
-          showRemovalModal(item) {
-            this.toDelete = item;
-            this.showRemoval = true;
-          },
-          deleteAssociation() {
-            let product = this.associations[this.toDelete].association.data.id;
-            this.request.send('DELETE', 'products/' + this.product.id + '/associations', {'associations' : product}).then(response => {
-              CandyEvent.$emit('notification', {
-                level: 'success',
-                message: 'Association removed'
-              });
-              this.associations.splice(this.toDelete, 1);
-              this.toDelete = null;
-              this.showRemoval = false;
-            });
-          },
-          save() {
-            // Map it out so our API can understand it.
-            let relations = _.map(this.associations, item => {
-              return {
-                'association_id': item.association.data.id,
-                'type' : item.type.data.id
-              }
-            });
-            this.request.send('POST', 'products/' + this.product.id + '/associations', {'relations' : relations}).then(response => {
-              CandyEvent.$emit('notification', {
-                level: 'success'
-              });
-              this.addAssociationModal = false;
-              this.results = [];
-              this.keywords = '';
-            });
-          },
-          /**
-           *
-           * Modal Methods
-           *
-          */
-          showProductAssociationModal() {
-            this.addAssociationModal = true;
-          },
-          changePage(page) {
-            this.results = [];
-            this.loading = true;
-            this.requestParams.current_page = page;
-            this.getResults(this.keywords);
-          },
-          getResults(keywords) {
-            this.requestParams.keywords = this.keywords;
-            let results = this.request.send('GET', 'search', {}, this.requestParams).then(response => {
-                  this.results = response.data;
-                  this.requestParams.total_pages = response.meta.pagination.total_pages;
-                  this.meta = response.meta;
-                  this.loading = false;
-            });
-          },
-          productThumbnail(product) {
-              if (product.thumbnail) {
-                  return product.thumbnail.data.thumbnail;
-              }
-              return '/hub/images/placeholder/no-image.svg';
-          },
-          alreadyLinked(product) {
-            return this.selected.contains(product.id);
-          },
-          assign(product) {
-            this.selected.push(product.id);
-            let association = {
-              type: {
-                data: this.types[0]
-              },
-              association: {
-                data : product
-              }
-            }
-            this.associations.push(association);
-          },
-          detatch(product) {
-            this.selected.splice(this.selected.indexOf(product.id), 1);
+        association: {
+          data: product,
+        },
+      };
+      this.associations.push(association);
+    },
+    detatch(product) {
+      this.selected.splice(this.selected.indexOf(product.id), 1);
 
-            let association = _.filter(this.associations, item => {
-              return item.association.data.id == product.id;
-            });
+      let association = _.filter(this.associations, item => {
+        return item.association.data.id == product.id;
+      });
 
-
-            this.associations.splice(this.associations.indexOf(association[0]), 1);
-          },
-          updateKeywords: _.debounce(function (e) {
-            this.results = null;
-            this.loading = true;
-            this.keywords = e.target.value;
-            this.requestParams.current_page = 1;
-            this.getResults(e.target.value);
-          }, 500)
-        }
-    }
+      this.associations.splice(this.associations.indexOf(association[0]), 1);
+    },
+    updateKeywords: _.debounce(function(e) {
+      this.results = null;
+      this.loading = true;
+      this.keywords = e.target.value;
+      this.requestParams.current_page = 1;
+      this.getResults(e.target.value);
+    }, 500),
+  },
+};
 </script>
 <template>
   <div class="row">
@@ -163,10 +172,10 @@
       -->
       <div class="row">
         <div class="col-xs-12 col-sm-6">
-          <h4>Product Associations</h4>
+          <h4>{{$t('product.ProductAssociations')}}</h4>
         </div>
         <div class="col-xs-12 col-sm-6 text-right">
-          <button type="button" class="btn btn-primary" @click="showProductAssociationModal">Add a Product</button>
+          <button type="button" class="btn btn-primary" @click="showProductAssociationModal">{{$t('product.AddProduct')}}</button>
         </div>
       </div>
       <!--
@@ -176,8 +185,8 @@
         <thead>
           <tr>
             <th width="80"></th>
-            <th>Name</th>
-            <th width="20%">Type</th>
+            <th>{{$t('product.Name')}}</th>
+            <th width="20%">{{$t('product.Type')}}</th>
             <th></th>
 
             <!-- <th colspan="2">Type</th> -->
@@ -191,7 +200,7 @@
             <td>{{ item.association.data|attribute('name') }}</td>
             <td>
               <select class="form-control" v-model="item.type.data.id">
-                <option value>-- Please select</option>
+                <option value>-- {{$t('product.PleaseSelect')}}</option>
                 <option :value="item.id" v-for="item in types">{{ item.name }}</option>
               </select>
             </td>
@@ -206,7 +215,7 @@
         <tfoot v-if="!getAssociations(filter).length">
           <tr>
             <td colspan="2">
-              <span class="text-muted">No products associated</span>
+              <span class="text-muted">{{$t('product.NoProductsAssociated')}}</span>
             </td>
           </tr>
         </tfoot>
@@ -215,10 +224,10 @@
       <!--
         Modal
       -->
-      <candy-modal title="Add product associations" v-show="addAssociationModal" @closed="addAssociationModal = false">
+      <candy-modal :title="$t('product.AddProductAssociations')" v-show="addAssociationModal" @closed="addAssociationModal = false">
         <div slot="body">
           <div class="form-group">
-            <label class="sr-only">Search</label>
+            <label class="sr-only">{{$t('common.Search')}}</label>
             <input type="text" class="form-control search" placeholder="Search Products" v-on:input="updateKeywords">
           </div>
           <hr>
@@ -226,7 +235,7 @@
             <thead>
               <tr>
                 <th> </th>
-                <th>Name</th>
+                <th>{{$t('product.Name')}}</th>
                 <th></th>
               </tr>
             </thead>
@@ -275,7 +284,7 @@
               <tr v-if="!loading && !products">
                 <td colspan="25">
                   <div class="alert alert-info">
-                    Start typing to see products
+                    {{$t('product.StartTypingToSeeProducts')}}
                   </div>
                 </td>
               </tr>
@@ -286,19 +295,19 @@
           </div>
         </div>
         <template slot="footer">
-            <button class="btn btn-primary" @click="save()">Associate products</button>
+            <button class="btn btn-primary" @click="save()">{{$t('product.AssociateProducts')}}</button>
         </template>
       </candy-modal>
 
       <!--
         Delete Association
       -->
-      <candy-modal title="Are you wish to remove this product?" v-show="showRemoval" @closed="showRemoval = false">
+      <candy-modal :title="$t('product.AreYouRemoveProduct')" v-show="showRemoval" @closed="showRemoval = false">
         <template slot="body">
-          This action cannot be undone
+          {{$t('product.ActionCannotUndone')}}
         </template>
         <template slot="footer">
-          <button class="btn btn-primary" @click="deleteAssociation()">Confirm removal</button>
+          <button class="btn btn-primary" @click="deleteAssociation()">{{$t('product.ConfirmRemoval')}}</button>
         </template>
       </candy-modal>
     </div>

@@ -1,289 +1,302 @@
 <script>
-    export default {
-        data() {
-            return {
-                request: apiRequest,
-                modalOpen: false,
-                generated: [],
-                options: [
-                ],
-                editing: false,
-                options: [],
-                variants: [],
-                optionRowExists: false,
-                sortListOptions: {
-                    onEnd: this.reorderOptionTags,
-                    filter: '.disabled',
-                    handle: '.handle',
-                    animation: 150
-                },
-                sortTableOptions: {
-                    filter: '.disabled',
-                    onEnd: this.reorder,
-                    handle: '.handle',
-                    animation: 150
-                }
-            }
-        },
-        props: {
-            product: {
-                type: Object
-            },
-            showModal: {
-                type: Boolean,
-                default: false
-            }
-        },
-        created() {
-            this.modalOpen = this.showModal;
-        },
-        mounted() {
-            this.variants = this.product.variants.data;
+export default {
+  data() {
+    return {
+      request: apiRequest,
+      modalOpen: false,
+      generated: [],
+      options: [],
+      editing: false,
+      options: [],
+      variants: [],
+      optionRowExists: false,
+      sortListOptions: {
+        onEnd: this.reorderOptionTags,
+        filter: '.disabled',
+        handle: '.handle',
+        animation: 150,
+      },
+      sortTableOptions: {
+        filter: '.disabled',
+        onEnd: this.reorder,
+        handle: '.handle',
+        animation: 150,
+      },
+    };
+  },
+  props: {
+    product: {
+      type: Object,
+    },
+    showModal: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  created() {
+    this.modalOpen = this.showModal;
+  },
+  mounted() {
+    this.variants = this.product.variants.data;
 
-            if (this.variants.length == 1 & !this.variants[0].options.length) {
-                this.variants = [];
-            }
-
-            Object.keys(this.product.option_data).map(key => {
-                this.options.push(this.product.option_data[key]);
-            });
-
-            this.options.forEach((option, index) => {
-                var options = option.options;
-                option.options = [];
-                Object.keys(options).map(key => {
-                    option.options.push(options[key]);
-                });
-            });
-            if (!this.variants) {
-                this.generateVariants();
-            }
-        },
-        methods: {
-            save() {
-                this.request.send('post', '/products/' + this.product.id + '/variants', {'variants' : this.variants, 'options': this.options})
-                    .then(response => {
-                        CandyEvent.$emit('notification', {
-                            level: 'success'
-                        });
-                        CandyEvent.$emit('product-updated', {
-                            variants: this.variants
-                        });
-                        this.modalOpen = false;
-                    }).catch(response => {
-                        CandyEvent.$emit('notification', {
-                            level: 'error',
-                            message: 'Missing / Invalid fields'
-                        });
-                    });
-            },
-            addOption(option, handle) {
-                let value = this.$refs[handle + '_option'][0].value;
-
-                let deny = false;
-
-                if (!value) {
-                    return;
-                }
-
-                option.options.forEach(option => {
-                    if (option.values[locale.current()].toUpperCase() == value.toUpperCase()) {
-                        deny = true;
-                        return;
-                    }
-                });
-
-                if (deny) {
-                    return;
-                }
-
-                option.options.push({
-                    position: 3,
-                    values: {
-                        [locale.current()]: value
-                    }
-                });
-                this.$refs[handle + '_option'][0].value = null;
-                this.generateVariants();
-            },
-            getOptionRef(handle) {
-                return handle + '_option';
-            },
-            getHandleRef(handle) {
-                return handle + '_handle';
-            },
-            deleteTag(handle, itemHandle) {
-                this.$delete(this.options[handle].options, itemHandle);
-                this.generateVariants();
-            },
-            addOptionRow(event) {
-                this.request.clearError('options');
-
-                if (this.optionRowExists) {
-                    return;
-                }
-                this.options.push({
-                    options: [],
-                    label: {
-                        [locale.current()]: event.target.value
-                    },
-                    position: this.options.length + 1
-                });
-                // this.$set(this.options, value.slugify(), );
-                event.target.value = null;
-            },
-            reorder({oldIndex, newIndex, item}) {
-                const movedItem = this.options.splice(oldIndex, 1)[0];
-                this.options.splice(newIndex, 0, movedItem);
-                this.generateVariants();
-                let pos = 1;
-                this.options.forEach(option => {
-                    option.position = pos;
-                    pos++;
-                });
-            },
-            reorderOptionTags({oldIndex, newIndex, item}) {
-                var parent = $(item).data('parent');
-
-                this.options.forEach((option, handle) => {
-                    if (option.label.en == parent) {
-                        const movedItem = option.options.splice(oldIndex, 1)[0];
-                        option.options.splice(newIndex, 0, movedItem);
-                        this.generateVariants();
-                        let pos = 1;
-                        option.options.forEach(option => {
-                            option.position = pos;
-                            pos++;
-                        });
-                    }
-                });
-            },
-            /**
-             * Generates the variants
-             * @return {Array}
-             */
-            generateVariants() {
-                this.request.clearError('variants');
-                let optionValues = this.getOptionValues();
-
-                let optionsToRemove = [];
-
-                _.each(this.variants, variant => {
-                    optionValues.forEach((options, optionValueIndex) => {
-                        options.forEach((value, optionIndex) => {
-                            let field = Object.keys(value);
-                            if (!variant.options[field[0].slugify()]) {
-                                variant.options[field[0].slugify()] = {
-                                    [locale.current()] : value[field]
-                                };
-                            };
-                            if (variant.options[field[0].slugify()][locale.current()] == value[field]) {
-                                optionsToRemove.push(optionValueIndex);
-                            }
-                        });
-                    });
-                });
-
-                optionValues = _.filter(optionValues, (item, index) => {
-                    if (optionsToRemove.includes(index)) {
-                        return false;
-                    }
-                    return true;
-                });
-
-                optionValues.forEach(variant => {
-                    let label = '';
-                    let data = {};
-
-
-                    variant.forEach((value, index) => {
-                        let keys = Object.keys(value);
-                        label += keys + ' ' + value[keys] + ((index + 1) < variant.length ? ', ' : ' ');
-                        data[keys[0].slugify()] = {[locale.current()]: value[keys]};
-                    });
-
-                    this.variants.push({
-                        label: label,
-                        price: '',
-                        options: data,
-                        inventory: 1,
-                        sku: ''
-                    });
-                });
-
-
-                this.product.variants.data = this.variants;
-            },
-            getOptionValues() {
-                let optionValues = [];
-                this.options.forEach((option, index) => {
-                    let childValues = [];
-                    option.options.forEach(child => {
-                        childValues.push({[option.label.en.trim()] : child.values.en});
-                    });
-                    optionValues.push(childValues);
-                });
-                return this.getAllCombinations(optionValues);
-            },
-            /**
-             * Gets all the possible combinations for the variants
-             * @param  {Array} arraysToCombine
-             * @return {Array}
-             */
-            getAllCombinations(arraysToCombine) {
-                var divisors = [];
-                for (var i = arraysToCombine.length - 1; i >= 0; i--) {
-                    divisors[i] = divisors[i + 1] ? divisors[i + 1] * arraysToCombine[i + 1].length : 1;
-                }
-                function getPermutation(n, arraysToCombine) {
-                    var result = [],
-                        curArray;
-                    for (var i = 0; i < arraysToCombine.length; i++) {
-                        curArray = arraysToCombine[i];
-                        result.push(curArray[Math.floor(n / divisors[i]) % curArray.length]);
-                    }
-                    return result;
-                }
-                var numPerms = arraysToCombine[0].length;
-                for (var i = 1; i < arraysToCombine.length; i++) {
-                    numPerms *= arraysToCombine[i].length;
-                }
-                var combinations = [];
-                for (var i = 0; i < numPerms; i++) {
-                    combinations.push(getPermutation(i, arraysToCombine));
-                }
-                return combinations;
-            },
-            validateOptionRow(val) {
-                this.optionRowExists = false;
-                this.options.forEach(option => {
-                    if (option.label.en.toUpperCase() == event.target.value.toUpperCase()) {
-                        this.optionRowExists = true;
-                        return;
-                    }
-                });
-            },
-            deleteFromArray(array, index) {
-               array.splice(index, 1);
-            },
-            getOptionValue(option, variant) {
-                var handle = option.label['en'].slugify();
-                if (variant.options[handle]) {
-                    return variant.options[handle]['en'];
-                }
-                return null;
-            }
-        }
+    if ((this.variants.length == 1) & !this.variants[0].options.length) {
+      this.variants = [];
     }
+
+    Object.keys(this.product.option_data).map(key => {
+      this.options.push(this.product.option_data[key]);
+    });
+
+    this.options.forEach((option, index) => {
+      var options = option.options;
+      option.options = [];
+      Object.keys(options).map(key => {
+        option.options.push(options[key]);
+      });
+    });
+    if (!this.variants) {
+      this.generateVariants();
+    }
+  },
+  methods: {
+    save() {
+      this.request
+        .send('post', '/products/' + this.product.id + '/variants', {
+          variants: this.variants,
+          options: this.options,
+        })
+        .then(response => {
+          CandyEvent.$emit('notification', {
+            level: 'success',
+          });
+          CandyEvent.$emit('product-updated', {
+            variants: this.variants,
+          });
+          this.modalOpen = false;
+        })
+        .catch(response => {
+          CandyEvent.$emit('notification', {
+            level: 'error',
+            message: 'Missing / Invalid fields',
+          });
+        });
+    },
+    addOption(option, handle) {
+      let value = this.$refs[handle + '_option'][0].value;
+
+      let deny = false;
+
+      if (!value) {
+        return;
+      }
+
+      option.options.forEach(option => {
+        if (
+          option.values[locale.current()].toUpperCase() == value.toUpperCase()
+        ) {
+          deny = true;
+          return;
+        }
+      });
+
+      if (deny) {
+        return;
+      }
+
+      option.options.push({
+        position: 3,
+        values: {
+          [locale.current()]: value,
+        },
+      });
+      this.$refs[handle + '_option'][0].value = null;
+      this.generateVariants();
+    },
+    getOptionRef(handle) {
+      return handle + '_option';
+    },
+    getHandleRef(handle) {
+      return handle + '_handle';
+    },
+    deleteTag(handle, itemHandle) {
+      this.$delete(this.options[handle].options, itemHandle);
+      this.generateVariants();
+    },
+    addOptionRow(event) {
+      this.request.clearError('options');
+
+      if (this.optionRowExists) {
+        return;
+      }
+      this.options.push({
+        options: [],
+        label: {
+          [locale.current()]: event.target.value,
+        },
+        position: this.options.length + 1,
+      });
+      // this.$set(this.options, value.slugify(), );
+      event.target.value = null;
+    },
+    reorder({ oldIndex, newIndex, item }) {
+      const movedItem = this.options.splice(oldIndex, 1)[0];
+      this.options.splice(newIndex, 0, movedItem);
+      this.generateVariants();
+      let pos = 1;
+      this.options.forEach(option => {
+        option.position = pos;
+        pos++;
+      });
+    },
+    reorderOptionTags({ oldIndex, newIndex, item }) {
+      var parent = $(item).data('parent');
+
+      this.options.forEach((option, handle) => {
+        if (option.label.en == parent) {
+          const movedItem = option.options.splice(oldIndex, 1)[0];
+          option.options.splice(newIndex, 0, movedItem);
+          this.generateVariants();
+          let pos = 1;
+          option.options.forEach(option => {
+            option.position = pos;
+            pos++;
+          });
+        }
+      });
+    },
+    /**
+     * Generates the variants
+     * @return {Array}
+     */
+    generateVariants() {
+      this.request.clearError('variants');
+      let optionValues = this.getOptionValues();
+
+      let optionsToRemove = [];
+
+      _.each(this.variants, variant => {
+        optionValues.forEach((options, optionValueIndex) => {
+          options.forEach((value, optionIndex) => {
+            let field = Object.keys(value);
+            if (!variant.options[field[0].slugify()]) {
+              variant.options[field[0].slugify()] = {
+                [locale.current()]: value[field],
+              };
+            }
+            if (
+              variant.options[field[0].slugify()][locale.current()] ==
+              value[field]
+            ) {
+              optionsToRemove.push(optionValueIndex);
+            }
+          });
+        });
+      });
+
+      optionValues = _.filter(optionValues, (item, index) => {
+        if (optionsToRemove.includes(index)) {
+          return false;
+        }
+        return true;
+      });
+
+      optionValues.forEach(variant => {
+        let label = '';
+        let data = {};
+
+        variant.forEach((value, index) => {
+          let keys = Object.keys(value);
+          label +=
+            keys +
+            ' ' +
+            value[keys] +
+            (index + 1 < variant.length ? ', ' : ' ');
+          data[keys[0].slugify()] = { [locale.current()]: value[keys] };
+        });
+
+        this.variants.push({
+          label: label,
+          price: '',
+          options: data,
+          inventory: 1,
+          sku: '',
+        });
+      });
+
+      this.product.variants.data = this.variants;
+    },
+    getOptionValues() {
+      let optionValues = [];
+      this.options.forEach((option, index) => {
+        let childValues = [];
+        option.options.forEach(child => {
+          childValues.push({ [option.label.en.trim()]: child.values.en });
+        });
+        optionValues.push(childValues);
+      });
+      return this.getAllCombinations(optionValues);
+    },
+    /**
+     * Gets all the possible combinations for the variants
+     * @param  {Array} arraysToCombine
+     * @return {Array}
+     */
+    getAllCombinations(arraysToCombine) {
+      var divisors = [];
+      for (var i = arraysToCombine.length - 1; i >= 0; i--) {
+        divisors[i] = divisors[i + 1]
+          ? divisors[i + 1] * arraysToCombine[i + 1].length
+          : 1;
+      }
+      function getPermutation(n, arraysToCombine) {
+        var result = [],
+          curArray;
+        for (var i = 0; i < arraysToCombine.length; i++) {
+          curArray = arraysToCombine[i];
+          result.push(curArray[Math.floor(n / divisors[i]) % curArray.length]);
+        }
+        return result;
+      }
+      var numPerms = arraysToCombine[0].length;
+      for (var i = 1; i < arraysToCombine.length; i++) {
+        numPerms *= arraysToCombine[i].length;
+      }
+      var combinations = [];
+      for (var i = 0; i < numPerms; i++) {
+        combinations.push(getPermutation(i, arraysToCombine));
+      }
+      return combinations;
+    },
+    validateOptionRow(val) {
+      this.optionRowExists = false;
+      this.options.forEach(option => {
+        if (option.label.en.toUpperCase() == event.target.value.toUpperCase()) {
+          this.optionRowExists = true;
+          return;
+        }
+      });
+    },
+    deleteFromArray(array, index) {
+      array.splice(index, 1);
+    },
+    getOptionValue(option, variant) {
+      var handle = option.label['en'].slugify();
+      if (variant.options[handle]) {
+        return variant.options[handle]['en'];
+      }
+      return null;
+    },
+  },
+};
 </script>
 
 <template>
     <div>
-        <button class="btn btn-primary" @click="modalOpen = true">Edit options</button>
+        <button class="btn btn-primary" @click="modalOpen = true">{{$t('product.EditOptions')}}</button>
         <candy-modal title="Edit options" v-show="modalOpen" @closed="modalOpen = false">
             <div slot="body" class="text-left">
-                <h4>Options</h4>
-                <p>need to get a unique identy for the options for loop</p>
+                <h4>{{$t('product.Options')}}</h4>
+                <p>{{$t('product.NeedUniqueOptions')}}</p>
                 <div class="alert alert-danger" v-if="request.getError('options')">
                     {{ request.getError('options') }}
                 </div>
@@ -292,10 +305,10 @@
                         <tr>
                             <th></th>
                             <th>
-                                Label
+                                {{$t('common.Label')}}
                             </th>
                             <th>
-                                Values
+                                {{$t('common.Values')}}
                             </th>
                             <th></th>
                         </tr>
@@ -352,7 +365,7 @@
                                 </ul>
                                 <div class="sortable-tags-list-input">
                                     <form class="option-form">
-                                        <input type="text" placeholder="Add option" :ref="getOptionRef(handle)">
+                                        <input type="text" :placeholder="$t('product.AddOption')" :ref="getOptionRef(handle)">
                                         <button @click.prevent="addOption(option, handle)"><i class="fa fa-plus"></i>
                                         </button>
                                     </form>
@@ -367,7 +380,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="25">
-                                <input type="text" class="form-control" placeholder="Type new option and press enter"
+                                <input type="text" class="form-control" :placeholder="$t('product.TypeNewOption')"
                                        @keyup.enter="addOptionRow" @keyup="validateOptionRow">
                             </td>
                         </tr>
@@ -376,22 +389,22 @@
                 </table>
 
                 <p class="text-danger" v-if="optionRowExists">
-                    This option already exists
+                    {{$t('product.OptionAlreadyExists')}}
                 </p>
 
                 <hr>
-                <h4>Variants</h4>
+                <h4>{{$t('product.Variants')}}</h4>
                 <div class="alert alert-danger" v-if="request.getError('variants')">
                     {{ request.getError('variants') }}
                 </div>
                 <table class="table association-table">
                     <thead>
                     <tr>
-                        <th>SKU</th>
+                        <th>{{$t('product.SKU')}}</th>
                         <th v-for="option in options">
                             {{ option.label.en }}
                         </th>
-                        <th>Price</th>
+                        <th>{{$t('product.Price')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -451,7 +464,7 @@
                 </table>-->
             </div>
             <template slot="footer">
-                <button class="btn btn-primary" @click="save()">Save Options</button>
+                <button class="btn btn-primary" @click="save()">{{$t('product.SaveOptions')}}</button>
             </template>
         </candy-modal>
     </div>

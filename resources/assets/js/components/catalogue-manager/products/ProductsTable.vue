@@ -1,197 +1,196 @@
 <script>
-    import Flatify from '../../../classes/Flatify'
-    import HasGroups from '../../../mixins/HasGroups.js';
-    import HasAttributes from '../../../mixins/HasAttributes.js';
-    import HasAssets from '../../../mixins/HasAssets.js';
+import Flatify from '../../../classes/Flatify';
+import HasGroups from '../../../mixins/HasGroups.js';
+import HasAttributes from '../../../mixins/HasAttributes.js';
+import HasAssets from '../../../mixins/HasAssets.js';
 
-    export default {
-        mixins: [
-            HasGroups,
-            HasAttributes,
-            HasAssets,
-        ],
-        data() {
-            return {
-                loaded: false,
-                savedSearches: [],
-                products: [],
-                editing: null,
-                editingBackup: null,
-                quickEditModal: false,
-                keywords: '',
-                meta: [],
-                params: {
-                    type: 'product',
-                    per_page: 25,
-                    page: 1,
-                    includes: 'channels,customer_groups,family,attribute_groups,variants,thumbnail.transforms'
-                }
-            }
-        },
+export default {
+  mixins: [HasGroups, HasAttributes, HasAssets],
+  data() {
+    return {
+      loaded: false,
+      savedSearches: [],
+      products: [],
+      editing: null,
+      editingBackup: null,
+      quickEditModal: false,
+      keywords: '',
+      meta: [],
+      params: {
+        type: 'product',
+        per_page: 25,
+        page: 1,
+        includes:
+          'channels,customer_groups,family,attribute_groups,variants,thumbnail.transforms',
+      },
+    };
+  },
 
-        mounted() {
-            this.loadProducts();
-            CandyEvent.$on('product-added', product => {
-                this.loadProducts();
-            });
+  mounted() {
+    this.loadProducts();
+    CandyEvent.$on('product-added', product => {
+      this.loadProducts();
+    });
 
-            apiRequest.send('GET', '/saved-searches/product')
-                .then(response => {
-                    this.savedSearches = response.data;
-                });
-        },
-        computed: {
-            editableVariants() {
-                if (!this.editing) {
-                    return [];
-                }
-                return this.products[this.editing].variants.data;
-            }
-        },
-        methods: {
-            route(path, param1) {
-                return route(path, param1);
-            },
-            suggest(term) {
-                this.keywords = term;
-                this.search();
-            },
-            isActive(terms) {
-                if (terms == 'all' && !this.keywords) {
-                    return true;
-                } else if (terms.payload && this.keywords == terms.payload.keywords) {
-                    return true;
-                }
-                return false;
-            },
-            loadProduct: function (id) {
-                location.href = route('hub.products.edit', id);
-            },
-            loadProducts() {
-                this.loaded = false;
-                apiRequest.send('GET', 'products', [], this.params)
-                    .then(response => {
-                        this.products = response.data;
-                        this.params.total_pages = response.meta.pagination.total_pages;
-                        this.loaded = true;
-                    });
-            },
-            searchProducts() {
-                this.loaded = false;
-                apiRequest.send('GET', 'search', [], this.params)
-                    .then(response => {
-                        this.products = response.data;
-                        this.params.total_pages = response.meta.pagination.data.total_pages;
-                        this.meta = response.meta;
-                        this.loaded = true;
-                    });
-            },
-            applySavedSearch(search) {
-                if (search && search.payload.keywords) {
-                    this.params['keywords'] = search.payload.keywords;
-                    this.keywords = search.payload.keywords;
-                }
-                this.searchProducts();
-            },
-            deleteSaved(index) {
-                let search = this.savedSearches[index];
-                this.savedSearches.splice(index, 1);
-                apiRequest.send('DELETE', 'saved-searches/' + search.id);
+    apiRequest.send('GET', '/saved-searches/product').then(response => {
+      this.savedSearches = response.data;
+    });
+  },
+  computed: {
+    editableVariants() {
+      if (!this.editing) {
+        return [];
+      }
+      return this.products[this.editing].variants.data;
+    },
+  },
+  methods: {
+    route(path, param1) {
+      return route(path, param1);
+    },
+    suggest(term) {
+      this.keywords = term;
+      this.search();
+    },
+    isActive(terms) {
+      if (terms == 'all' && !this.keywords) {
+        return true;
+      } else if (terms.payload && this.keywords == terms.payload.keywords) {
+        return true;
+      }
+      return false;
+    },
+    loadProduct: function(id) {
+      location.href = route('hub.products.edit', id);
+    },
+    loadProducts() {
+      this.loaded = false;
+      apiRequest.send('GET', 'products', [], this.params).then(response => {
+        this.products = response.data;
+        this.params.total_pages = response.meta.pagination.total_pages;
+        this.loaded = true;
+      });
+    },
+    searchProducts() {
+      this.loaded = false;
+      apiRequest.send('GET', 'search', [], this.params).then(response => {
+        this.products = response.data;
+        this.params.total_pages = response.meta.pagination.data.total_pages;
+        this.meta = response.meta;
+        this.loaded = true;
+      });
+    },
+    applySavedSearch(search) {
+      if (search && search.payload.keywords) {
+        this.params['keywords'] = search.payload.keywords;
+        this.keywords = search.payload.keywords;
+      }
+      this.searchProducts();
+    },
+    deleteSaved(index) {
+      let search = this.savedSearches[index];
+      this.savedSearches.splice(index, 1);
+      apiRequest.send('DELETE', 'saved-searches/' + search.id);
 
-                if (this.keywords == search.payload.keywords) {
-                    this.keywords = '';
-                }
-            },
-            resetSearch() {
-                this.params['keywords'] = null;
-                this.keywords = '';
-                this.loadProducts();
-            },
-            saveSearch() {
-                apiRequest.send('POST', '/saved-searches', {
-                    type: 'product',
-                    name: this.keywords,
-                    keywords: this.keywords
-                }).then(response => {
-                    this.savedSearches.push(response.data);
-                });
-            },
-            search: _.debounce(function (){
-                    this.loaded = false;
-                    this.editing = null;
-                    this.params['keywords'] = this.keywords;
+      if (this.keywords == search.payload.keywords) {
+        this.keywords = '';
+      }
+    },
+    resetSearch() {
+      this.params['keywords'] = null;
+      this.keywords = '';
+      this.loadProducts();
+    },
+    saveSearch() {
+      apiRequest
+        .send('POST', '/saved-searches', {
+          type: 'product',
+          name: this.keywords,
+          keywords: this.keywords,
+        })
+        .then(response => {
+          this.savedSearches.push(response.data);
+        });
+    },
+    search: _.debounce(function() {
+      this.loaded = false;
+      this.editing = null;
+      this.params['keywords'] = this.keywords;
 
-                    if (this.keywords) {
-                        this.searchProducts();
-                    } else {
-                        this.loadProducts();
-                    }
-                }, 500
-            ),
-            getStock(product) {
-                var variants = product.variants.data;
-                if (product.variant_count == 1) {
-                    return variants[0].inventory;
-                }
-                return 'Multiple';
-            },
-            quickEdit(index) {
-                this.editing = index;
-                this.editingBackup = JSON.parse(JSON.stringify(this.products[index]));
+      if (this.keywords) {
+        this.searchProducts();
+      } else {
+        this.loadProducts();
+      }
+    }, 500),
+    getStock(product) {
+      var variants = product.variants.data;
+      if (product.variant_count == 1) {
+        return variants[0].inventory;
+      }
+      return 'Multiple';
+    },
+    quickEdit(index) {
+      this.editing = index;
+      this.editingBackup = JSON.parse(JSON.stringify(this.products[index]));
 
-                if (this.editableVariants.length > 1) {
-                    this.quickEditModal = true;
-                }
-            },
-            quickSave() {
-                var product = this.products[this.editing];
-                var variants = product.variants.data;
+      if (this.editableVariants.length > 1) {
+        this.quickEditModal = true;
+      }
+    },
+    quickSave() {
+      var product = this.products[this.editing];
+      var variants = product.variants.data;
 
-                variants.forEach((variant, index) => {
-                    // Only save if it has changed.
-                    if (JSON.stringify(variant) == JSON.stringify(this.editingBackup.variants.data[index])) {
-                        return;
-                    }
-                    apiRequest.send('put', '/products/variants/' + variant.id, variant)
-                        .then(response => {
-                            CandyEvent.$emit('notification', {
-                                level: 'success',
-                                message: 'Stock Updated'
-                            });
-                        }).catch(response => {
-                            CandyEvent.$emit('notification', {
-                                level: 'error',
-                                message: response.message
-                            });
-                            return false;
-                        });
-                });
-
-                this.editingBackup = null;
-                this.editing = null;
-                this.quickEditModal = false;
-            },
-            cancelQuickEdit() {
-                this.products[this.editing] = this.editingBackup;
-                this.editingBackup = null;
-                this.editing = null;
-            },
-            changePage(page) {
-                this.loaded = false;
-                this.params.page = page;
-                this.search();
-            }
-        },
-        directives: {
-            focus: {
-                // directive definition
-                inserted: function (el) {
-                    el.focus()
-                }
-            }
+      variants.forEach((variant, index) => {
+        // Only save if it has changed.
+        if (
+          JSON.stringify(variant) ==
+          JSON.stringify(this.editingBackup.variants.data[index])
+        ) {
+          return;
         }
+        apiRequest
+          .send('put', '/products/variants/' + variant.id, variant)
+          .then(response => {
+            CandyEvent.$emit('notification', {
+              level: 'success',
+              message: 'Stock Updated',
+            });
+          })
+          .catch(response => {
+            CandyEvent.$emit('notification', {
+              level: 'error',
+              message: response.message,
+            });
+            return false;
+          });
+      });
 
-    }
+      this.editingBackup = null;
+      this.editing = null;
+      this.quickEditModal = false;
+    },
+    cancelQuickEdit() {
+      this.products[this.editing] = this.editingBackup;
+      this.editingBackup = null;
+      this.editing = null;
+    },
+    changePage(page) {
+      this.loaded = false;
+      this.params.page = page;
+      this.search();
+    },
+  },
+  directives: {
+    focus: {
+      // directive definition
+      inserted: function(el) {
+        el.focus();
+      },
+    },
+  },
+};
 </script>
 
 <template>
@@ -200,7 +199,7 @@
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" :class="{'active' : isActive('all')}">
                 <a href="#all-products" aria-controls="all-products" role="tab" data-toggle="tab" @click="resetSearch()">
-                    All Products
+                    {{$t('product.All Products')}}
                 </a>
             </li>
             <li role="presentation" v-for="(search, index) in savedSearches" :key="search.id" :class="{'active' : isActive(search)}">
@@ -251,15 +250,15 @@
                                 <span class="input-group-addon">
                                   <i class="fa fa-search" aria-hidden="true"></i>
                                 </span>
-                                <label class="sr-only" for="search">Search</label>
-                                <input type="text" class="form-control" id="search" placeholder="Search" @keyup="search" v-model="keywords">
+                                <label class="sr-only" for="search">{{$t('common.Search')}}</label>
+                                <input type="text" class="form-control" id="search" :placeholder="$t('common.Search')" @keyup="search" v-model="keywords">
                             </div>
 
                         </div>
                         <div class="form-group col-xs-12 col-md-2">
 
                             <button type="button" class="btn btn-default btn-full" @click="saveSearch()">
-                                <i class="fa fa-floppy-o fa-first" aria-hidden="true"></i> Save Search
+                                <i class="fa fa-floppy-o fa-first" aria-hidden="true"></i> {{$t('common.Save')}} {{$t('common.Search')}}
                             </button>
 
                         </div>
@@ -268,7 +267,7 @@
                 <template v-if="meta.suggestions">
                     <template v-for="(options, field) in meta.suggestions">
                         <template v-for="option in options">
-                            Did you mean <a href="#" @click="suggest(option.text)"><span v-html="option.highlighted"></span></a>?
+                            {{$t('product.Didyoumean')}} <a href="#" @click="suggest(option.text)"><span v-html="option.highlighted"></span></a>?
                         </template>
                     </template>
                     <hr>
@@ -279,11 +278,11 @@
                     <thead>
                         <tr>
                             <th width="5%"></th>
-                            <th width="25%">Product</th>
-                            <th width="10%">Stock</th>
-                            <th width="15%">Display</th>
-                            <th width="19%">Purchasable</th>
-                            <th width="19%">Group</th>
+                            <th width="25%">{{$t('product.Product')}}</th>
+                            <th width="10%">{{$t('product.Stock')}}</th>
+                            <th width="15%">{{$t('product.Display')}}</th>
+                            <th width="19%">{{$t('product.Purchasable')}}</th>
+                            <th width="19%">{{$t('product.Group')}}</th>
                             <th  width="15%"></th>
                         </tr>
                     </thead>
@@ -349,7 +348,7 @@
                     <tfoot v-if="loaded && !products.length">
                         <tr>
                             <td colspan="25" class="text-muted">
-                                No Products Found
+                                {{$t('product.NoProductsFound')}}
                             </td>
                         </tr>
                     </tfoot>
@@ -367,7 +366,7 @@
                     </div>
                 </div>
                 <template slot="footer">
-                    <button type="button" class="btn btn-primary" @click="quickSave">Save Stock</button>
+                    <button type="button" class="btn btn-primary" @click="quickSave">{{$t('product.SaveStock')}}</button>
                 </template>
             </candy-modal>
 
@@ -376,15 +375,15 @@
 </template>
 
 <style lang="scss" scoped>
-    .editable-stock {
-        padding:2px 4px;
-        position: relative;
-        border:1px dashed transparent;
-        color:#333;
-        &:hover {
-            text-decoration: none;
-            background-color:#f5f5f5;
-            border-color: #BEBEBE;
-        }
-    }
+.editable-stock {
+  padding: 2px 4px;
+  position: relative;
+  border: 1px dashed transparent;
+  color: #333;
+  &:hover {
+    text-decoration: none;
+    background-color: #f5f5f5;
+    border-color: #bebebe;
+  }
+}
 </style>

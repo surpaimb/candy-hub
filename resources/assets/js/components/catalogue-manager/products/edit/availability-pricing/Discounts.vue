@@ -1,16 +1,15 @@
 <template>
     <div>
-      <h4>Discounts</h4>
+      <h4>{{$t('product.Discounts')}}</h4>
       <hr>
-      <p>Coming Soon</p>
+      <p>{{$t('product.ComingSoon')}}</p>
     </div>
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-            }
-        }
-    }
+export default {
+  data() {
+    return {};
+  },
+};
 </script>

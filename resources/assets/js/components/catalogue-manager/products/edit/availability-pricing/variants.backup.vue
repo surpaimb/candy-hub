@@ -1,73 +1,74 @@
 <script>
-    export default {
-        data() {
-            return {
-                current: {},
-                currentIndex: 0,
-                createVariant: false
-            }
-        },
-        props: {
-            product: {
-                type: Object
-            },
-            variants: {
-                type: Array
-            }
-        },
-        created() {
+export default {
+  data() {
+    return {
+      current: {},
+      currentIndex: 0,
+      createVariant: false,
+    };
+  },
+  props: {
+    product: {
+      type: Object,
+    },
+    variants: {
+      type: Array,
+    },
+  },
+  created() {
+    this.current = this.variants[0];
+  },
+  methods: {
+    selectVariant(index) {
+      this.current = this.variants[index];
+      this.currentIndex = index;
+    },
+    deleteVariant(index) {
+      if (confirm('Are you sure you want to delete this variant?')) {
+        apiRequest
+          .send('delete', '/products/variants/' + this.variants[index].id)
+          .then(response => {
+            CandyEvent.$emit('notification', {
+              level: 'success',
+            });
+            this.variants.splice(index, 1);
             this.current = this.variants[0];
-        },
-        methods: {
-            selectVariant(index) {
-                this.current = this.variants[index];
-                this.currentIndex = index;
-            },
-            deleteVariant(index) {
-                if (confirm('Are you sure you want to delete this variant?')) {
-                    apiRequest.send('delete', '/products/variants/' + this.variants[index].id)
-                        .then(response => {
-                            CandyEvent.$emit('notification', {
-                                level: 'success'
-                            });
-                            this.variants.splice(index, 1);
-                            this.current = this.variants[0];
-                        }).catch(response => {
-                        CandyEvent.$emit('notification', {
-                            level: 'error',
-                            message: 'An error occurred, please refresh and try again'
-                        });
-                    });
-                }
-            },
-            capitalize(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            },
-            convertToCm(measurement) {
-                let rate = 1;
-                if (measurement.unit == 'mm') {
-                    rate = 0.1;
-                } else if (measurement.unit == 'in') {
-                    rate = 2.54;
-                }
-                return measurement.value * rate;
-            }
-        },
-        computed: {
-        //     volume() {
-        //         // Convert height to cm...
-        //         let height = this.convertToCm(this.current.height),
-        //             width = this.convertToCm(this.current.width),
-        //             depth = this.convertToCm(this.current.depth),
-        //             cmsquared = height * width * depth;
-
-        //         if (this.current.volume.unit == 'l') {
-        //             return cmsquared / 1000;
-        //         }
-        //         return cmsquared;
-        //     }
-        }
-    }
+          })
+          .catch(response => {
+            CandyEvent.$emit('notification', {
+              level: 'error',
+              message: 'An error occurred, please refresh and try again',
+            });
+          });
+      }
+    },
+    capitalize(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    convertToCm(measurement) {
+      let rate = 1;
+      if (measurement.unit == 'mm') {
+        rate = 0.1;
+      } else if (measurement.unit == 'in') {
+        rate = 2.54;
+      }
+      return measurement.value * rate;
+    },
+  },
+  computed: {
+    //     volume() {
+    //         // Convert height to cm...
+    //         let height = this.convertToCm(this.current.height),
+    //             width = this.convertToCm(this.current.width),
+    //             depth = this.convertToCm(this.current.depth),
+    //             cmsquared = height * width * depth;
+    //         if (this.current.volume.unit == 'l') {
+    //             return cmsquared / 1000;
+    //         }
+    //         return cmsquared;
+    //     }
+  },
+};
 </script>
 
 <template>
@@ -78,7 +79,7 @@
           <div class="col-xs-12">
             <div class="row">
               <div class="col-md-8">
-                <h4>Product Availability</h4>
+                <h4>{{$t('product.ProductAvailability')}}</h4>
               </div>
               <div class="col-md-4 text-right">
                 <candy-create-variant :product="product" :showModal="createVariant"></candy-create-variant>
@@ -91,7 +92,7 @@
         </div>
         <div class="row">
           <div class="col-xs-12" :class="{'col-md-8 col-md-push-4': variants.length > 1}">
-            <h4>Options</h4>
+            <h4>{{$t('product.Options')}}</h4>
             <hr>
             <div class="row">
               <div class="col-xs-12 col-md-8">
@@ -106,7 +107,7 @@
                 <a href="" class="variant-option-img">
                   <div class="change-img">
                     <img src="/hub/images/placeholder/no-image.svg" alt="Placeholder" class="placeholder">
-                    Change image
+                    {{$t('product.ChangeImage')}}
                   </div>
                 </a>
                 <!--
@@ -117,41 +118,41 @@
               </div>
             </div>
 
-            <h4>Pricing</h4>
+            <h4>{{$t('product.Pricing')}}</h4>
             <hr>
             <div class="row">
               <div class="col-xs-12 col-md-5">
                 <div class="form-group">
-                  <label>Price</label>
+                  <label>{{$t('product.Price')}}</label>
                   <div class="input-group input-group-full">
-                    <span class="input-group-addon">&pound;</span>
+                    <span class="input-group-addon">{{$t('common.&pound;')}}</span>
                     <input type="number" class="form-control" v-model="current.price">
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-md-5">
                 <div class="form-group">
-                  <label>Compare at Price</label>
+                  <label>{{$t('product.ComparePrice')}}</label>
                   <div class="input-group input-group-full">
-                    <span class="input-group-addon">&pound;</span>
+                    <span class="input-group-addon">{{$t('common.&pound;')}}</span>
                     <input type="number" class="form-control">
                   </div>
                 </div>
               </div>
               <div class="col-xs-6 col-md-2">
                 <div class="form-group">
-                  <label>Tax</label>
+                  <label>{{$t('product.Tax')}}</label>
                   <candy-select :options="['0%','5%','20%']"></candy-select>
                 </div>
               </div>
             </div>
 
-            <h4>Inventory</h4>
+            <h4>{{$t('product.Inventory')}}</h4>
             <hr>
             <div class="row">
               <div class="col-xs-12 col-md-5">
                 <div class="form-group">
-                  <label>Inventory Policy</label>
+                  <label>{{$t('product.InventoryPolicy')}}</label>
                   <candy-select :options="['Option 1','Option 2','Option 3']"></candy-select>
                 </div>
               </div>
@@ -159,19 +160,19 @@
             <div class="row">
               <div class="col-xs-6 col-md-5">
                 <div class="form-group">
-                  <label>SKU</label>
+                  <label>{{$t('product.SKU')}}</label>
                   <input type="text" class="form-control" v-model="current.sku">
                 </div>
               </div>
               <div class="col-xs-12 col-md-5">
                 <div class="form-group">
-                  <label>Quantity</label>
+                  <label>{{$t('product.Quantity')}}</label>
                   <input type="number" class="form-control" v-model="current.inventory">
                 </div>
               </div>
               <div class="col-xs-12 col-md-2">
                 <div class="form-group">
-                  <label>Incoming</label>
+                  <label>{{$t('product.Incoming')}}</label>
                   <br><a href="#" class="btn btn-lg btn-link">0</a>
                 </div>
               </div>
@@ -181,24 +182,24 @@
                 <div class="form-group">
                   <label for="backorder">
                     <input id="backorder" type="checkbox" v-model="current.backorder">
-                    <span class="faux-label">Allow customers to purchase this product when it's out of stock</span>
+                    <span class="faux-label">{{$t('product.AllowPurchaseWhenOutStock')}}</span>
                   </label>
                 </div>
               </div>
             </div>
 
-            <h4>Shipping</h4>
+            <h4>{{$t('product.Shipping')}}</h4>
             <hr>
             <div class="form-group">
               <label for="requiresShipping">
                 <input id="requiresShipping" type="checkbox" v-model="current.requires_shipping">
-                <span class="faux-label"> This product requires shipping</span>
+                <span class="faux-label"> {{$t('product.ProductShipping')}}</span>
               </label>
             </div>
             <div class="row">
               <div class="col-xs-12 col-md-5">
                 <div class="form-group">
-                  <label>Fulfillment Service</label>
+                  <label>{{$t('product.FulfillmentService')}}</label>
                   <candy-select :options="['Option','Option','Option']"></candy-select>
                 </div>
               </div>
@@ -207,8 +208,8 @@
               <div class="col-xs-12 col-md-5">
                 <div class="form-group">
                   <label>
-                    Weight
-                    <em class="help-txt">Description on what weigth is used for.</em>
+                    {{$t('product.Weight')}}
+                    <em class="help-txt">{{$t('product.DescriptionOnWeight')}}</em>
                   </label>
                   <div class="input-group input-group-full">
                     <input type="number" class="form-control" v-model="current.weight.value">
@@ -218,13 +219,13 @@
               </div>
             </div>
             <hr>
-            <p>Fields below will show dependant on fulfillment service.</p>
+            <p>{{$t('product.FieldsDependantOnService')}}</p>
             <div class="row">
               <div class="col-xs-12 col-md-5">
                 <div class="form-group">
                   <label>
-                    Height
-                    <em class="help-txt">Description on what height is used for.</em>
+                    {{$t('product.Height')}}
+                    <em class="help-txt">{{$t('product.DescriptionOnHeight')}}</em>
                   </label>
                   <div class="input-group input-group-full">
                     <input type="number" class="form-control" v-model="current.height.value">
@@ -233,8 +234,8 @@
                 </div>
                 <div class="form-group">
                   <label>
-                    Width
-                    <em class="help-txt">Description on what width is used for.</em>
+                    {{$t('product.Width')}}
+                    <em class="help-txt">{{$t('product.DescriptionOnWidth')}}</em>
                   </label>
                   <div class="input-group input-group-full">
                     <input type="number" class="form-control" v-model="current.width.value">
@@ -243,8 +244,8 @@
                 </div>
                 <div class="form-group">
                   <label>
-                    Depth
-                    <em class="help-txt">Description on what depth is used for.</em>
+                    {{$t('product.Depth')}}
+                    <em class="help-txt">{{$t('product.DescriptionOnDepth')}}</em>
                   </label>
                   <div class="input-group input-group-full">
                     <input type="number" class="form-control" v-model="current.depth.value">
@@ -253,15 +254,15 @@
                 </div>
                 <div class="form-group">
                   <label>
-                    Volume
-                    <em class="help-txt">Description on what volume is used for.</em>
+                    {{$t('product.Volume')}}
+                    <em class="help-txt">{{$t('product.DescriptionOnVolume')}}</em>
                   </label>
                   <div class="input-group input-group-full">
                     <input type="number" class="form-control" :value="volume">
                     <candy-select :options="['l', 'ml']" v-model="current.volume.unit"></candy-select>
                   </div>
                 </div>
-                <button class="btn btn-danger" @click="deleteVariant(currentIndex)" v-if="variants.length > 1"><i class="fa fa-trash"></i> Delete variant</button>
+                <button class="btn btn-danger" @click="deleteVariant(currentIndex)" v-if="variants.length > 1"><i class="fa fa-trash"></i> {{$t('product.DeleteVariant')}}</button>
               </div>
             </div>
           </div>

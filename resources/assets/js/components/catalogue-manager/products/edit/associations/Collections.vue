@@ -1,99 +1,125 @@
 <script>
-    export default {
-        data() {
-            return {
-                request: apiRequest,
-                channel: this.$store.getters.getDefaultChannel.handle,
-                language: locale.current(),
-                deleteModalOpen: false,
-                deleteModalData: {},
-                foo: false,
-                search: '',
-                collections: null,
-                tableParams: {
-                    columns: [
-                        {'name': '', 'width': '50px', 'type': 'image', 'align': 'left', 'source': 'name'},
-                        {'name': 'Title', 'width': '*', 'type': 'attribute', 'align': 'left', 'source': 'name'},
-                        {'name': 'URL', 'width': '50%', 'type': 'route', 'align': 'left', 'source': 'slug'}
-                    ]
-                }
-            }
-        },
-        props: {
-            productId: {
-                type: String,
-                required: true,
-            },
-            existing: {
-                type: Array,
-                default() {
-                    return [];
-                }
-            }
-        },
-        mounted() {
-            this.$nextTick(() => {
-                this.collections = this.existing;
-            });
-        },
-        methods: {
-            getAttribute(data, attribute) {
-                return data.attribute_data[attribute][this.channel][this.language];
-            },
-            getRoute(data) {
-                let slug = '';
-                data.routes.data.forEach(route => {
-                    if (route.locale === this.language) {
-                        slug = route.slug;
-                    }
-                });
-
-                return slug;
-            },
-            addNew(event) {
-                this.collections = event;
-                this.save();
-            },
-            removeCollection() {
-                this.collections.splice(this.deleteModalData.index, 1);
-                this.deleteModalOpen = false;
-                CandyEvent.$emit('notification', {
-                    level: 'success',
-                    message: 'Collection removed'
-                });
-                this.request.send('delete', '/products/' + this.productId + '/collections/' + this.deleteModalData.id);
-            },
-            save() {
-
-                const ids = _.map(this.collections, c => {
-                    return c.id;
-                });
-
-                this.request.send('post', '/products/' + this.productId + '/collections', {'collections': ids})
-                    .then(response => {
-                        this.collectionsLoaded = true;
-                        CandyEvent.$emit('notification', {
-                            level: 'success'
-                        });
-                        this.productCollections = response.data;
-                        this.closeAddModal();
-                    });
-            },
-            openDeleteModal(collection) {
-                this.deleteModalData = {
-                    'id': collection.id,
-                    'index': this.collections.indexOf(collection),
-                    'name': this.getAttribute(collection, 'name'),
-                    'slug': this.getRoute(collection)
-                };
-                this.deleteModalOpen = true;
-            },
-            closeDeleteModal(collection) {
-                this.deleteModalData = {};
-                this.deleteModalOpen = false;
-            },
+export default {
+  data() {
+    return {
+      request: apiRequest,
+      channel: this.$store.getters.getDefaultChannel.handle,
+      language: locale.current(),
+      deleteModalOpen: false,
+      deleteModalData: {},
+      foo: false,
+      search: '',
+      collections: null,
+      tableParams: {
+        columns: [
+          {
+            name: '',
+            width: '50px',
+            type: 'image',
+            align: 'left',
+            source: 'name',
+          },
+          {
+            name: 'Title',
+            width: '*',
+            type: 'attribute',
+            align: 'left',
+            source: 'name',
+          },
+          {
+            name: 'URL',
+            width: '50%',
+            type: 'route',
+            align: 'left',
+            source: 'slug',
+          },
+        ],
+      },
+    };
+  },
+  props: {
+    productId: {
+      type: String,
+      required: true,
+    },
+    existing: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.collections = this.existing;
+    });
+  },
+  methods: {
+    getAttribute(data, attribute) {
+      return data.attribute_data[attribute][this.channel][this.language];
+    },
+    getRoute(data) {
+      let slug = '';
+      data.routes.data.forEach(route => {
+        if (route.locale === this.language) {
+          slug = route.slug;
         }
-    }
+      });
+
+      return slug;
+    },
+    addNew(event) {
+      this.collections = event;
+      this.save();
+    },
+    removeCollection() {
+      this.collections.splice(this.deleteModalData.index, 1);
+      this.deleteModalOpen = false;
+      CandyEvent.$emit('notification', {
+        level: 'success',
+        message: 'Collection removed',
+      });
+      this.request.send(
+        'delete',
+        '/products/' +
+          this.productId +
+          '/collections/' +
+          this.deleteModalData.id,
+      );
+    },
+    save() {
+      const ids = _.map(this.collections, c => {
+        return c.id;
+      });
+
+      this.request
+        .send('post', '/products/' + this.productId + '/collections', {
+          collections: ids,
+        })
+        .then(response => {
+          this.collectionsLoaded = true;
+          CandyEvent.$emit('notification', {
+            level: 'success',
+          });
+          this.productCollections = response.data;
+          this.closeAddModal();
+        });
+    },
+    openDeleteModal(collection) {
+      this.deleteModalData = {
+        id: collection.id,
+        index: this.collections.indexOf(collection),
+        name: this.getAttribute(collection, 'name'),
+        slug: this.getRoute(collection),
+      };
+      this.deleteModalOpen = true;
+    },
+    closeDeleteModal(collection) {
+      this.deleteModalData = {};
+      this.deleteModalOpen = false;
+    },
+  },
+};
 </script>
 
 <template>
@@ -101,7 +127,7 @@
         <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <h4>Collections</h4>
+                    <h4>{{$t('product.Collections')}}</h4>
                 </div>
                 <div class="col-xs-12 col-sm-6 text-right">
                     <candy-collection-browser @saved="addNew" :current="collections" v-if="collections"></candy-collection-browser>
@@ -112,8 +138,8 @@
                 <thead>
                 <tr>
                     <td></td>
-                    <td>Collection Name</td>
-                    <td colspan="2">URL</td>
+                    <td>{{$t('product.CollectionName')}}</td>
+                    <td colspan="2">{{$t('product.URL')}}</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -137,7 +163,7 @@
                 <tfoot v-if="collections && !collections.length">
                     <tr>
                       <td colspan="4">
-                        <span class="text-muted">No collections found</span>
+                        <span class="text-muted">{{$t('product.NoCollectionsFound')}}</span>
                       </td>
                     </tr>
                 </tfoot>
@@ -149,12 +175,12 @@
 
             <div slot="body">
                 <p>
-                    Are you sure you want to remove the <strong>"{{ deleteModalData.name }}"</strong> collection from this product?<br>
+                    {{$t('product.AreYouSureRemoveCollection',[deleteModalData.name])}}<br>
                 </p>
             </div>
 
             <div slot="footer">
-                <button type="button" class="btn btn-primary" @click="removeCollection()">Confirm Removal</button>
+                <button type="button" class="btn btn-primary" @click="removeCollection()">{{$t('product.ConfirmRemoval')}}</button>
             </div>
 
         </candy-modal>

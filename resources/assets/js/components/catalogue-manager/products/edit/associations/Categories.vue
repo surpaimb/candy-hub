@@ -1,151 +1,166 @@
 <script>
-    export default {
-        data() {
-            return {
-                request: apiRequest,
-                requestParams: {
-                    per_page: 6,
-                    current_page: 1,
-                    keywords: '',
-                    includes: 'routes',
-                    type: 'category'
-                },
-                channel: this.$store.getters.getDefaultChannel.handle,
-                language: locale.current(),
-                addModalOpen: false,
-                selectedCategories: [],
-                deleteModalOpen: false,
-                deleteModalData: {},
-                search: '',
-                categories: [],
-                categoriesLoaded: false,
-                productCategories: [],
-                /**
+export default {
+  data() {
+    return {
+      request: apiRequest,
+      requestParams: {
+        per_page: 6,
+        current_page: 1,
+        keywords: '',
+        includes: 'routes',
+        type: 'category',
+      },
+      channel: this.$store.getters.getDefaultChannel.handle,
+      language: locale.current(),
+      addModalOpen: false,
+      selectedCategories: [],
+      deleteModalOpen: false,
+      deleteModalData: {},
+      search: '',
+      categories: [],
+      categoriesLoaded: false,
+      productCategories: [],
+      /**
                     Adding associations
                  */
-                results: [],
-                loading: false,
-                meta: []
-            }
-        },
-        mounted() {
-            if (!this.categories.length) {
-                this.loadCategories();
-            }
-            this.productCategories = this.product.categories.data;
-
-            this.productCategories.forEach(category => {
-                this.selectedCategories.push(category.id);
-            });
-        },
-        props: {
-            product: {
-                type: Object
-            }
-        },
-        methods: {
-            getAttribute(data, attribute) {
-                return data.attribute_data[attribute][this.channel][this.language];
-            },
-            thumbnail(product) {
-              if (product.thumbnail) {
-                  return product.thumbnail.data.thumbnail;
-              }
-              return '/hub/images/placeholder/no-image.svg';
-            },
-            getRoute(data) {
-                let slug = '';
-                data.routes.data.forEach(route => {
-                    if (route.locale === this.language) {
-                        slug = route.slug;
-                    }
-                });
-
-                return slug;
-            },
-            loadCategories() {
-                this.request.send('get', '/categories', [], this.requestParams)
-                    .then(response => {
-                        this.categories = response.data;
-                        this.requestParams.total_pages = response.meta.pagination.total_pages;
-                        this.categoriesLoaded = true;
-                    });
-            },
-            removeCategory() {
-                let productID = this.product.id;
-                let categoryID = this.deleteModalData.id;
-
-                this.productCategories.splice(this.deleteModalData.index, 1);
-
-                this.deleteModalOpen = false;
-                CandyEvent.$emit('notification', {
-                    level: 'success',
-                    message: 'Category removed'
-                });
-
-                this.request.send('delete', '/products/' + productID + '/categories/' + categoryID);
-            },
-            changePage(page) {
-                this.results = [];
-                this.loading = true;
-                this.requestParams.current_page = page;
-                this.getResults(this.keywords);
-            },
-            save() {
-                this.request.send('post', '/products/' + this.product.id + '/categories', {'categories': this.selectedCategories})
-                    .then(response => {
-                        CandyEvent.$emit('notification', {
-                            level: 'success'
-                        });
-                        this.results = [];
-                        this.addModalOpen = false;
-                    });
-            },
-            closeAddModal() {
-                this.save();
-                this.addModalOpen = false;
-            },
-            openDeleteModal(category) {
-                this.deleteModalData = {
-                    'id': category.id,
-                    'index': this.productCategories.indexOf(category),
-                    'name': this.getAttribute(category, 'name'),
-                    'slug': this.getRoute(category)
-                };
-                this.deleteModalOpen = true;
-            },
-            closeDeleteModal(category) {
-                this.deleteModalData = {};
-                this.deleteModalOpen = false;
-            },
-            assign(category) {
-                this.selectedCategories.push(category.id);
-                this.productCategories.push(category);
-            },
-            detatch(category) {
-                this.selectedCategories.splice(this.selectedCategories.indexOf(category.id), 1);
-                this.productCategories.splice(this.productCategories.indexOf(category), 1);
-            },
-            getResults() {
-                this.requestParams.keywords = this.keywords;
-                let results = this.request.send('GET', 'search', {}, this.requestParams).then(response => {
-                    this.results = response.data;
-                    this.requestParams.total_pages = response.meta.pagination.total_pages;
-                    this.meta = response.meta;
-                    this.loading = false;
-                });
-            },
-            alreadyLinked(category) {
-                return this.selectedCategories.contains(category.id);
-            },
-            updateKeywords: _.debounce(function (e) {
-                this.results = [];
-                this.loading = true;
-                this.keywords = e.target.value;
-                this.getResults();
-            }, 500)
-        } // end
+      results: [],
+      loading: false,
+      meta: [],
+    };
+  },
+  mounted() {
+    if (!this.categories.length) {
+      this.loadCategories();
     }
+    this.productCategories = this.product.categories.data;
+
+    this.productCategories.forEach(category => {
+      this.selectedCategories.push(category.id);
+    });
+  },
+  props: {
+    product: {
+      type: Object,
+    },
+  },
+  methods: {
+    getAttribute(data, attribute) {
+      return data.attribute_data[attribute][this.channel][this.language];
+    },
+    thumbnail(product) {
+      if (product.thumbnail) {
+        return product.thumbnail.data.thumbnail;
+      }
+      return '/hub/images/placeholder/no-image.svg';
+    },
+    getRoute(data) {
+      let slug = '';
+      data.routes.data.forEach(route => {
+        if (route.locale === this.language) {
+          slug = route.slug;
+        }
+      });
+
+      return slug;
+    },
+    loadCategories() {
+      this.request
+        .send('get', '/categories', [], this.requestParams)
+        .then(response => {
+          this.categories = response.data;
+          this.requestParams.total_pages = response.meta.pagination.total_pages;
+          this.categoriesLoaded = true;
+        });
+    },
+    removeCategory() {
+      let productID = this.product.id;
+      let categoryID = this.deleteModalData.id;
+
+      this.productCategories.splice(this.deleteModalData.index, 1);
+
+      this.deleteModalOpen = false;
+      CandyEvent.$emit('notification', {
+        level: 'success',
+        message: 'Category removed',
+      });
+
+      this.request.send(
+        'delete',
+        '/products/' + productID + '/categories/' + categoryID,
+      );
+    },
+    changePage(page) {
+      this.results = [];
+      this.loading = true;
+      this.requestParams.current_page = page;
+      this.getResults(this.keywords);
+    },
+    save() {
+      this.request
+        .send('post', '/products/' + this.product.id + '/categories', {
+          categories: this.selectedCategories,
+        })
+        .then(response => {
+          CandyEvent.$emit('notification', {
+            level: 'success',
+          });
+          this.results = [];
+          this.addModalOpen = false;
+        });
+    },
+    closeAddModal() {
+      this.save();
+      this.addModalOpen = false;
+    },
+    openDeleteModal(category) {
+      this.deleteModalData = {
+        id: category.id,
+        index: this.productCategories.indexOf(category),
+        name: this.getAttribute(category, 'name'),
+        slug: this.getRoute(category),
+      };
+      this.deleteModalOpen = true;
+    },
+    closeDeleteModal(category) {
+      this.deleteModalData = {};
+      this.deleteModalOpen = false;
+    },
+    assign(category) {
+      this.selectedCategories.push(category.id);
+      this.productCategories.push(category);
+    },
+    detatch(category) {
+      this.selectedCategories.splice(
+        this.selectedCategories.indexOf(category.id),
+        1,
+      );
+      this.productCategories.splice(
+        this.productCategories.indexOf(category),
+        1,
+      );
+    },
+    getResults() {
+      this.requestParams.keywords = this.keywords;
+      let results = this.request
+        .send('GET', 'search', {}, this.requestParams)
+        .then(response => {
+          this.results = response.data;
+          this.requestParams.total_pages = response.meta.pagination.total_pages;
+          this.meta = response.meta;
+          this.loading = false;
+        });
+    },
+    alreadyLinked(category) {
+      return this.selectedCategories.contains(category.id);
+    },
+    updateKeywords: _.debounce(function(e) {
+      this.results = [];
+      this.loading = true;
+      this.keywords = e.target.value;
+      this.getResults();
+    }, 500),
+  }, // end
+};
 </script>
 
 <template>
@@ -153,11 +168,11 @@
         <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <h4>Categories</h4>
+                    <h4>{{$t('product.Categories')}}</h4>
                 </div>
                 <div class="col-xs-12 col-sm-6 text-right">
                     <button type="button" class="btn btn-primary" @click="addModalOpen = true">
-                        Add Category
+                        {{$t('product.AddCategory')}}
                     </button>
                 </div>
             </div>
@@ -166,8 +181,8 @@
                 <thead>
                 <tr>
                     <td></td>
-                    <td>Category Name</td>
-                    <td colspan="2">URL</td>
+                    <td>{{$t('product.CategoryName')}}</td>
+                    <td colspan="2">{{$t('product.URL')}}</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -191,7 +206,7 @@
                 <tfoot v-if="!productCategories.length">
                     <tr>
                       <td colspan="4">
-                        <span class="text-muted">No categories found</span>
+                        <span class="text-muted">{{$t('product.NoCategoriesFound')}}</span>
                       </td>
                     </tr>
                 </tfoot>
@@ -199,11 +214,11 @@
         </div>
 
         <!-- Add category to product Modal -->
-        <candy-modal id="addModal" title="Add this product to categories" size="modal-lg" v-show="addModalOpen" @closed="closeAddModal()">
+        <candy-modal id="addModal" :title="$t('product.AddProductToCategories')" size="modal-lg" v-show="addModalOpen" @closed="closeAddModal()">
 
             <div slot="body">
                 <div class="form-group">
-                    <label class="sr-only">Search</label>
+                    <label class="sr-only">{{$t('commone.Search')}}</label>
                     <input type="text" class="form-control search" v-model="search" placeholder="Search Categories" v-on:input="updateKeywords">
                 </div>
                 <hr>
@@ -211,8 +226,8 @@
                     <thead>
                         <tr>
                             <th width="10%"></th>
-                            <th width="40%">Name</th>
-                            <th>Route</th>
+                            <th width="40%">{{$t('product.Name')}}</th>
+                            <th>{{$t('product.Route')}}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -244,7 +259,7 @@
                         <tr v-if="!loading && !results.length">
                             <td colspan="25">
                                 <div class="alert alert-info">
-                                    Start typing to see categories
+                                    {{$t('product.StartTypingToSeeCategories')}}
                                 </div>
                             </td>
                         </tr>
@@ -263,7 +278,7 @@
             </div>
 
             <div slot="footer">
-                <button type="button" class="btn btn-primary" @click="save()">Save Assignments</button>
+                <button type="button" class="btn btn-primary" @click="save()">{{$t('product.SaveAssignments')}}</button>
             </div>
 
         </candy-modal>
@@ -273,12 +288,12 @@
 
             <div slot="body">
                 <p>
-                    Are you sure you want to remove the <strong>"{{ deleteModalData.name }}"</strong> category from this product?<br>
+                    {{$t('product.AreYouSureRemoveCategory',[deleteModalData.name])}}<br>
                 </p>
             </div>
 
             <div slot="footer">
-                <button type="button" class="btn btn-primary" @click="removeCategory()">Confirm Removal</button>
+                <button type="button" class="btn btn-primary" @click="removeCategory()">{{$t('product.ConfirmRemoval')}}</button>
             </div>
 
         </candy-modal>
