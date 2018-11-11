@@ -218,7 +218,7 @@ export default {
 
             <div slot="body">
                 <div class="form-group">
-                    <label class="sr-only">{{$t('commone.Search')}}</label>
+                    <label class="sr-only">{{$t('common.Search')}}</label>
                     <input type="text" class="form-control search" v-model="search" placeholder="Search Categories" v-on:input="updateKeywords">
                 </div>
                 <hr>

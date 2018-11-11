@@ -394,7 +394,7 @@ export default {
                 </button>
             </template>
         </candy-modal>
-        <candy-modal $title="$t('forms.DeleteAssetPrompt')" v-show="deleteModalOpen" @closed="closeDeleteModal">
+        <candy-modal :title="$t('forms.DeleteAssetPrompt')" v-show="deleteModalOpen" @closed="closeDeleteModal">
             <div slot="body">
                 <p>{{$t('forms.NotUndo')}}</p>
             </div>

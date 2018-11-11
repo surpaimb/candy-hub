@@ -86,7 +86,7 @@ export default {
                     <div class="col-md-4">
                         <label for="sku">{{$t('product.Price')}}</label>
                         <div class="input-group input-group-full">
-                            <span class="input-group-addon">{{$t('common.&pound;')}}</span>
+                            <span class="input-group-addon">{{$t('common.pound')}}</span>
                             <input type="number" class="form-control" v-model="variant.price">
                         </div>
                     </div>

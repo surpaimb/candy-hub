@@ -125,7 +125,7 @@ export default {
                 <div class="form-group">
                   <label>{{$t('product.Price')}}</label>
                   <div class="input-group input-group-full">
-                    <span class="input-group-addon">{{$t('common.&pound;')}}</span>
+                    <span class="input-group-addon">{{$t('common.pound')}}</span>
                     <input type="number" class="form-control" v-model="current.price">
                   </div>
                 </div>
@@ -134,7 +134,7 @@ export default {
                 <div class="form-group">
                   <label>{{$t('product.ComparePrice')}}</label>
                   <div class="input-group input-group-full">
-                    <span class="input-group-addon">{{$t('common.&pound;')}}</span>
+                    <span class="input-group-addon">{{$t('common.pound')}}</span>
                     <input type="number" class="form-control">
                   </div>
                 </div>

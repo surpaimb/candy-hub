@@ -199,7 +199,7 @@ export default {
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" :class="{'active' : isActive('all')}">
                 <a href="#all-products" aria-controls="all-products" role="tab" data-toggle="tab" @click="resetSearch()">
-                    {{$t('product.All Products')}}
+                    {{$t('product.AllProducts')}}
                 </a>
             </li>
             <li role="presentation" v-for="(search, index) in savedSearches" :key="search.id" :class="{'active' : isActive(search)}">

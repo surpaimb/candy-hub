@@ -1,115 +1,123 @@
 <script>
-    export default {
-        data() {
-            return {
-                request: apiRequest,
-                addLocaleModalOpen: false,
-                addRedirectModalOpen: false,
-                deleteUrlModalOpen: false,
-                deletedIndex : null,
-                urlToDelete:{},
-                errors: {},
-                urls: [],
-                newUrl: {
-                    locale: locale.current(),
-                    slug: ''
-                }
-            }
-        },
-        mounted() {
-            this.urls = _.map(this.routes, item => {
-                return {
-                    id: item.id,
-                    slug: item.slug,
-                    default: item.default
-                };
+export default {
+  data() {
+    return {
+      request: apiRequest,
+      addLocaleModalOpen: false,
+      addRedirectModalOpen: false,
+      deleteUrlModalOpen: false,
+      deletedIndex: null,
+      urlToDelete: {},
+      errors: {},
+      urls: [],
+      newUrl: {
+        locale: locale.current(),
+        slug: '',
+      },
+    };
+  },
+  mounted() {
+    this.urls = _.map(this.routes, item => {
+      return {
+        id: item.id,
+        slug: item.slug,
+        default: item.default,
+      };
+    });
+    Dispatcher.add('save-urls', this);
+  },
+  computed: {
+    slugify: {
+      get() {
+        return this.newUrl.slug.slugify();
+      },
+    },
+  },
+  props: {
+    languages: {
+      type: Array,
+    },
+    model: {
+      type: Object,
+    },
+    endpoint: {
+      type: String,
+    },
+    routes: {
+      type: Array,
+    },
+  },
+  methods: {
+    getFlag: function(locale) {
+      if (locale == 'en') {
+        locale = 'gb';
+      }
+      return 'flag-icon-' + locale;
+    },
+    save() {
+      _.each(this.urls, (item, index) => {
+        this.request
+          .send('put', '/routes/' + item.id, item)
+          .then(response => {
+            CandyEvent.$emit('notification', {
+              level: 'success',
             });
-            Dispatcher.add('save-urls', this);
-        },
-        computed: {
-            slugify: {
-                get() {
-                    return this.newUrl.slug.slugify();
-                }
-            }
-        },
-        props: {
-            languages: {
-                type: Array
-            },
-            model: {
-                type: Object
-            },
-            endpoint: {
-                type: String
-            },
-            routes: {
-                type: Array
-            }
-        },
-        methods: {
-            getFlag: function(locale) {
-                if (locale == 'en') {
-                    locale = 'gb';
-                }
-                return 'flag-icon-' + locale;
-            },
-            save() {
-                _.each(this.urls, (item, index) => {
-                    this.request.send('put', '/routes/' + item.id, item)
-                        .then(response => {
-                            CandyEvent.$emit('notification', {
-                                level: 'success'
-                            });
-                        }).catch(response => {
-                            this.$set(this.errors, index, response.data);
-                        });
-                });
-            },
-            saveUrl() {
-                let data = this.newUrl;
-                this.errors = {};
-                data.slug = data.slug.slugify();
-                this.request.send('post', '/' + this.endpoint + '/' + this.model.id + '/routes', data)
-                    .then(response => {
-                        CandyEvent.$emit('notification', {
-                            level: 'success'
-                        });
-                        this.urls.push({
-                            slug: data.slug.slugify(),
-                            locale: data.locale
-                        });
-                        this.newUrl = {};
-                        this.addLocaleModalOpen = false;
-                    });
-            },
-            deleteUrl() {
-                this.request.send('delete', '/routes/' + this.urlToDelete.id)
-                    .then(response => {
-                        CandyEvent.$emit('notification', {
-                            level: 'success'
-                        });
-                        this.urls.splice(this.deletedIndex, 1);
+          })
+          .catch(response => {
+            this.$set(this.errors, index, response.data);
+          });
+      });
+    },
+    saveUrl() {
+      let data = this.newUrl;
+      this.errors = {};
+      data.slug = data.slug.slugify();
+      this.request
+        .send(
+          'post',
+          '/' + this.endpoint + '/' + this.model.id + '/routes',
+          data,
+        )
+        .then(response => {
+          CandyEvent.$emit('notification', {
+            level: 'success',
+          });
+          this.urls.push({
+            slug: data.slug.slugify(),
+            locale: data.locale,
+          });
+          this.newUrl = {};
+          this.addLocaleModalOpen = false;
+        });
+    },
+    deleteUrl() {
+      this.request
+        .send('delete', '/routes/' + this.urlToDelete.id)
+        .then(response => {
+          CandyEvent.$emit('notification', {
+            level: 'success',
+          });
+          this.urls.splice(this.deletedIndex, 1);
 
-                        if (this.urlToDelete.default == true) {
-                            this.urls[0].default = true;
-                        }
-                        this.urlToDelete = {};
-                        this.deletedIndex = null;
-                        this.deleteUrlModalOpen = false;
-                    });
-            },
-            showUrlDeleteModal(index) {
-                this.deletedIndex = index;
-                this.urlToDelete  = this.urls[index];
-                this.deleteUrlModalOpen = true;
-            },
-            closeUrlDeleteModal() {
-                this.request.clearError();
-                this.deleteUrlModalOpen = false;
-            }
-        }
-    }
+          if (this.urlToDelete.default == true) {
+            this.urls[0].default = true;
+          }
+          this.urlToDelete = {};
+          this.deletedIndex = null;
+          this.deleteUrlModalOpen = false;
+        });
+    },
+    showUrlDeleteModal(index) {
+      this.deletedIndex = index;
+      this.urlToDelete = this.urls[index];
+      this.deleteUrlModalOpen = true;
+    },
+    closeUrlDeleteModal() {
+      this.request.clearError();
+      this.deleteUrlModalOpen = false;
+    },
+  },
+};
 </script>
 
 <template>
@@ -160,7 +168,7 @@
             </div>
         </div>
 
-        <candy-modal ：title="$t('element.DeleteURLConfirm')" v-show="deleteUrlModalOpen" size="modal-sm" @closed="closeUrlDeleteModal">
+        <candy-modal :title="$t('element.DeleteURLConfirm')" v-show="deleteUrlModalOpen" size="modal-sm" @closed="closeUrlDeleteModal">
             <div slot="body">
                 <p>{{$t('element.NotUndo')}}</p>
                 <div class="form-group">
