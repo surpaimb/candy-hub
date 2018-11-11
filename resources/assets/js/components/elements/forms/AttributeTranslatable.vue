@@ -1,107 +1,116 @@
 <script>
-    export default {
-        data() {
-            return {
-                translating: false,
-                defaultLanguage: locale.current(),
-                defaultChannel: this.$store.getters.getDefaultChannel.handle,
-                translateLanguage: locale.current(),
-                translateChannel: this.$store.getters.getDefaultChannel.handle,
-                isDefault: true,
-                originalData: []
-            }
-        },
-        props: {
-            request: {
-                type: Object
-            },
-            channels: {
-                type: Array,
-                default() {
-                    return [];
-                }
-            },
-            languages: {
-                type : Array
-            },
-            attributes: {
-                type: Array
-            },
-            attributeData: {
-                type: Object
-            }
-        },
-        watch: {
-            translateChannel: function(){
-                this.isDefault = (this.defaultChannel === this.translateChannel && this.defaultLanguage === this.translateLanguage);
-            },
-            translateLanguage: function(){
-                this.isDefault = (this.defaultChannel === this.translateChannel && this.defaultLanguage === this.translateLanguage);
-            }
-        },
-        methods: {
-            getError (mapping) {
-                let messageArr = _.get(this.request.errors, 'attributes\.'+mapping+'\.webstore\.en');
-                return _.head(messageArr);
-            },
-            hasError (mapping) {
-                return _.has(this.request.errors, 'attributes\.'+mapping+'\.webstore\.en');
-            },
-            useDefault (obj) {
-                if (obj.checked) {
-                    this.set(obj.id, null);
-                } else {
-                    this.set(obj.id, this.get(obj.id, 'original'));
-                }
-            },
-            get (handle, type) {
-                var channel = '';
-                var language = '';
-                var source = {};
+export default {
+  data() {
+    return {
+      translating: false,
+      defaultLanguage: locale.current(),
+      defaultChannel: this.$store.getters.getDefaultChannel.handle,
+      translateLanguage: locale.current(),
+      translateChannel: this.$store.getters.getDefaultChannel.handle,
+      isDefault: true,
+      originalData: [],
+    };
+  },
+  props: {
+    request: {
+      type: Object,
+    },
+    channels: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    languages: {
+      type: Array,
+    },
+    attributes: {
+      type: Array,
+    },
+    attributeData: {
+      type: Object,
+    },
+  },
+  watch: {
+    translateChannel: function() {
+      this.isDefault =
+        this.defaultChannel === this.translateChannel &&
+        this.defaultLanguage === this.translateLanguage;
+    },
+    translateLanguage: function() {
+      this.isDefault =
+        this.defaultChannel === this.translateChannel &&
+        this.defaultLanguage === this.translateLanguage;
+    },
+  },
+  methods: {
+    getError(mapping) {
+      let messageArr = _.get(
+        this.request.errors,
+        'attributes.' + mapping + '.webstore.en',
+      );
+      return _.head(messageArr);
+    },
+    hasError(mapping) {
+      return _.has(
+        this.request.errors,
+        'attributes.' + mapping + '.webstore.en',
+      );
+    },
+    useDefault(obj) {
+      if (obj.checked) {
+        this.set(obj.id, null);
+      } else {
+        this.set(obj.id, this.get(obj.id, 'original'));
+      }
+    },
+    get(handle, type) {
+      var channel = '';
+      var language = '';
+      var source = {};
 
-                if (type === 'default') {
-                    channel = this.defaultChannel;
-                    language = this.defaultLanguage;
-                    source = this.attributeData;
-                } else if (type === 'original') {
-                    channel = this.translateChannel;
-                    language = this.translateLanguage;
-                    source = this.originalData;
-                } else {
-                    channel = this.translateChannel;
-                    language = this.translateLanguage;
-                    source = this.attributeData;
-                }
+      if (type === 'default') {
+        channel = this.defaultChannel;
+        language = this.defaultLanguage;
+        source = this.attributeData;
+      } else if (type === 'original') {
+        channel = this.translateChannel;
+        language = this.translateLanguage;
+        source = this.originalData;
+      } else {
+        channel = this.translateChannel;
+        language = this.translateLanguage;
+        source = this.attributeData;
+      }
 
-                return _.get(source, handle+'.'+channel+'.'+language);
-            },
-            set(handle, value, type) {
+      return _.get(source, handle + '.' + channel + '.' + language);
+    },
+    set(handle, value, type) {
+      var channel = '';
+      var language = '';
 
-                var channel = '';
-                var language = '';
+      if (type === 'default') {
+        channel = this.defaultChannel;
+        language = this.defaultLanguage;
+      } else {
+        channel = this.translateChannel;
+        language = this.translateLanguage;
+      }
 
-                if (type === 'default') {
-                    channel = this.defaultChannel;
-                    language = this.defaultLanguage;
-                } else {
-                    channel = this.translateChannel;
-                    language = this.translateLanguage;
-                }
-
-                if (!this.attributeData[handle]) {
-                    this.$set(this.attributeData, handle, {});
-                }
-                if (!this.attributeData[handle][channel]) {
-                    this.$set(this.attributeData[handle], channel, {});
-                }
-                this.$set(this.attributeData[handle][channel], language, value);
-            }
-        },
-        created: function() {
-            // Non Reactive Data
-            this.originalData = JSON.parse(JSON.stringify(this.attributeData));
-        }
-    }
+      if (!this.attributeData[handle]) {
+        this.$set(this.attributeData, handle, {});
+      }
+      if (!this.attributeData[handle][channel]) {
+        this.$set(this.attributeData[handle], channel, {});
+      }
+      this.$set(this.attributeData[handle][channel], language, value);
+    },
+  },
+  created: function() {
+    // Non Reactive Data
+    this.originalData = JSON.parse(JSON.stringify(this.attributeData));
+  },
+};
 </script>
 
 <template>
@@ -113,21 +122,21 @@
                     <div class="col-xs-12">
                         <div class="row">
                             <div class="col-md-6">
-                                <button v-if="!translating" class="btn btn-default" @click="translating = true">Translate</button>
-                                <button v-if="translating" class="btn btn-default" @click="translating = false">Hide Translation</button>
+                                <button v-if="!translating" class="btn btn-default" @click="translating = true">{{$t('forms.Translate')}}</button>
+                                <button v-if="translating" class="btn btn-default" @click="translating = false">{{$t('forms.HideTranslation')}}</button>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-inline">
                                     <div class="form-group">
                                         <div v-show="translating">
-                                            <label class="sr-only">Store Channels</label>
+                                            <label class="sr-only">{{$t('forms.StoreChannels')}}</label>
                                             <candy-select :options="channels" v-model="translateChannel" v-if="channels.length"></candy-select>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div v-show="translating">
-                                            <label class="sr-only">Language</label>
+                                            <label class="sr-only">{{$t('forms.Language')}}</label>
                                             <candy-select :options="languages" v-model="translateLanguage" v-if="languages.length"></candy-select>
                                         </div>
                                     </div>
@@ -246,7 +255,7 @@
                                             :class="{ attributecheckbox: true }"
                                             :checked="(get(attribute.handle) === null)"
                                             :originalValue="get(attribute.handle)">
-                                Use Default
+                                {{$t('forms.UseDefault')}}
                             </candy-checkbox>
                             <label v-show="isDefault">&nbsp;</label>
 

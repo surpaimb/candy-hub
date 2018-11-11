@@ -1,43 +1,43 @@
 <script>
-    export default {
-        data() {
-            return {
-                defaults: {
-                    'language': locale.current()
-                },
-                originalFields: []
-            }
-        },
-        props: {
-            params: {
-                type: Object,
-                default: {'translating':false, 'language':'en'}
-            },
-            fields: {
-                type: Object,
-                default: {}
-            }
-        },
-        methods: {
-            capitalize(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            },
-            isDefault() {
-                return (this.params.language === this.defaults.language) ? true : false;
-            },
-            useDefault: function(obj) {
-                var value = null;
-                if(!obj.checked) {
-                    value = this.originalFields[obj.id].value[this.params.language];
-                }
-                this.$set(this.fields[obj.id].value, this.params.language, value);
-            }
-        },
-        created: function() {
-            // Non Reactive Data
-            this.originalFields = JSON.parse(JSON.stringify(this.fields));
-        }
-    }
+export default {
+  data() {
+    return {
+      defaults: {
+        language: locale.current(),
+      },
+      originalFields: [],
+    };
+  },
+  props: {
+    params: {
+      type: Object,
+      default: { translating: false, language: 'en' },
+    },
+    fields: {
+      type: Object,
+      default: {},
+    },
+  },
+  methods: {
+    capitalize(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    isDefault() {
+      return this.params.language === this.defaults.language ? true : false;
+    },
+    useDefault: function(obj) {
+      var value = null;
+      if (!obj.checked) {
+        value = this.originalFields[obj.id].value[this.params.language];
+      }
+      this.$set(this.fields[obj.id].value, this.params.language, value);
+    },
+  },
+  created: function() {
+    // Non Reactive Data
+    this.originalFields = JSON.parse(JSON.stringify(this.fields));
+  },
+};
 </script>
 
 <template>
@@ -81,7 +81,7 @@
                                         :id="key"
                                         @change="useDefault"
                                         :checked="(field.value[params.language] === null)">
-                            Use Default
+                            {{$t('forms.UseDefault')}}
                         </candy-checkbox>
                         <label v-if="isDefault()">&nbsp;</label>
                         <candy-input v-if="params.translating"

@@ -1,18 +1,15 @@
 <script>
-    export default {
-        props: [
-            'headings',
-            'items'
-        ],
-        data () {
-            return {
-                rows: []
-            }
-        },
-        mounted () {
-            this.rows = this.items;
-        }
-    }
+export default {
+  props: ['headings', 'items'],
+  data() {
+    return {
+      rows: [],
+    };
+  },
+  mounted() {
+    this.rows = this.items;
+  },
+};
 </script>
 
 <template>
@@ -28,14 +25,14 @@
 
             <div class="bulk-actions">
               <div class="border-inner">
-                1 product selected
-                <a href="#" class="btn btn-outline btn-sm">Edit</a>
-                <a href="#" class="btn btn-outline btn-sm">Publish</a>
-                <a href="#" class="btn btn-outline btn-sm">Hide</a>
-                <a href="#" class="btn btn-outline btn-sm">Delete</a>
+                1 {{$t('forms.ProductSelected')}}
+                <a href="#" class="btn btn-outline btn-sm">{{$t('forms.Edit')}}</a>
+                <a href="#" class="btn btn-outline btn-sm">{{$t('forms.Publish')}}</a>
+                <a href="#" class="btn btn-outline btn-sm">{{$t('forms.Hide')}}</a>
+                <a href="#" class="btn btn-outline btn-sm">{{$t('forms.Delete')}}</a>
               </div>
               <div class="all-selected">
-                <em>All products one this page are selected</em>
+                <em>{{$t('forms.AllProductAreSelected')}}</em>
               </div>
             </div>
           </div>

@@ -1,75 +1,78 @@
 <script>
-    export default {
-        data() {
-            return {
-                defCols: ['Label', 'Value'],
-                defRows: [],
-                sortableOptions: {
-                    onEnd: this.reorder,
-                    filter: '.disabled',
-                    handle: '.handle',
-                    animation: 150
-                }
-            }
-        },
-        props: {
-            columns: {
-                type: Array,
-                default() {
-                    return [];
-                }
-            },
-            rows: {
-                type: Array,
-                default() {
-                    return [];
-                }
-            }
-        },
-        mounted() {
-            if (this.columns.length) {
-                this.defCols = this.columns;
-            }
-            if (this.rows.length) {
-                this.defRows = this.rows;
-            }
-        },
-        methods: {
-            addRow() {
-                let newRow = {
-                    id: this.makeId()
-                };
-                _.each(this.defCols, (col, index) => {
-                    this.$set(newRow, this.sanitize(col), '');
-                });
-                this.defRows.push(newRow);
-            },
-            reorder ({oldIndex, newIndex}) {
-                const movedItem = this.defRows.splice(oldIndex, 1)[0];
-                this.defRows.splice(newIndex, 0, movedItem);
-            },
-            makeId() {
-                var text = "";
-                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-                for (var i = 0; i < 5; i++)
-                    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-                return text;
-            },
-            sanitize(word) {
-                return word.toString().toLowerCase()
-                .replace(/\s+/g, '-')           // Replace spaces with -
-                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-                .replace(/^-+/, '')             // Trim - from start of text
-                .replace(/-+$/, '');
-            },
-            remove(index) {
-                this.defRows.splice(index, 1);
-            }
-        }
+export default {
+  data() {
+    return {
+      defCols: ['Label', 'Value'],
+      defRows: [],
+      sortableOptions: {
+        onEnd: this.reorder,
+        filter: '.disabled',
+        handle: '.handle',
+        animation: 150,
+      },
+    };
+  },
+  props: {
+    columns: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    rows: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+  mounted() {
+    if (this.columns.length) {
+      this.defCols = this.columns;
     }
+    if (this.rows.length) {
+      this.defRows = this.rows;
+    }
+  },
+  methods: {
+    addRow() {
+      let newRow = {
+        id: this.makeId(),
+      };
+      _.each(this.defCols, (col, index) => {
+        this.$set(newRow, this.sanitize(col), '');
+      });
+      this.defRows.push(newRow);
+    },
+    reorder({ oldIndex, newIndex }) {
+      const movedItem = this.defRows.splice(oldIndex, 1)[0];
+      this.defRows.splice(newIndex, 0, movedItem);
+    },
+    makeId() {
+      var text = '';
+      var possible =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+      for (var i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+    },
+    sanitize(word) {
+      return word
+        .toString()
+        .toLowerCase()
+        .replace(/\s+/g, '-') // Replace spaces with -
+        .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+        .replace(/\-\-+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, '');
+    },
+    remove(index) {
+      this.defRows.splice(index, 1);
+    },
+  },
+};
 </script>
 
 <template>
@@ -85,7 +88,7 @@
             <tfoot>
                 <tr>
                     <td :colspan="defCols.length + 2">
-                        <button class="add-row-btn" @click="addRow">Add row</button>
+                        <button class="add-row-btn" @click="addRow">{{$t('forms.AddRow')}}</button>
                     </td>
                 </tr>
             </tfoot>
@@ -118,23 +121,23 @@
 </template>
 
 <style lang="scss" scoped>
-    tfoot {
-        > tr > td {
-            padding:0;
-        }
-    }
-    .add-row-btn {
-        background-color:#f5f5f5;
-        padding:1em 0;
-        border:none;
-        color:#A5A4A4;
-        text-transform:uppercase;
-        font-size:.875em;
-        font-weight:600;
-        display:block;
-        width:100%;
-        &:hover {
-            color:#686868;
-        }
-    }
+tfoot {
+  > tr > td {
+    padding: 0;
+  }
+}
+.add-row-btn {
+  background-color: #f5f5f5;
+  padding: 1em 0;
+  border: none;
+  color: #a5a4a4;
+  text-transform: uppercase;
+  font-size: 0.875em;
+  font-weight: 600;
+  display: block;
+  width: 100%;
+  &:hover {
+    color: #686868;
+  }
+}
 </style>

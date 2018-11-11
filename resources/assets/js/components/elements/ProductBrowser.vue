@@ -5,7 +5,7 @@
         <candy-modal title="Add product associations" v-show="show" @closed="show = false">
             <div slot="body">
                 <div class="form-group">
-                    <label class="sr-only">Search</label>
+                    <label class="sr-only">{{$t('forms.Search')}}</label>
                     <input type="text" class="form-control search" placeholder="Search Products" v-on:input="updateKeywords">
                 </div>
                 <hr>
@@ -13,7 +13,7 @@
                     <thead>
                     <tr>
                         <th> </th>
-                        <th>Name</th>
+                        <th>{{$t('forms.Name')}}</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -62,7 +62,7 @@
                     <tr v-if="!loading && !products">
                         <td colspan="25">
                         <div class="alert alert-info">
-                            Start typing to see products
+                            {{$t('forms.StartSeeProduct')}}
                         </div>
                         </td>
                     </tr>
@@ -80,92 +80,94 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            buttonText: {
-                type: String,
-                default: 'Browse products',
-            },
-            buttonConfirm: {
-                type: String,
-                default: 'Browse products',
-            },
-            current: {
-                type: Array,
-                default() {
-                    return [];
-                }
-            },
-            perPage: {
-                type: String|Number,
-                default: 12,
-            },
-        },
-        data() {
-            return {
-                show: false,
-                loading: false,
-                products: [],
-                selected: [],
-                requestParams: {
-                    per_page: this.perPage,
-                    current_page: 1,
-                    keywords: '',
-                    type: 'product'
-                }
-            }
-        },
-        mounted() {
-            this.selected = this.current;
-        },
-        computed: {
-            ids() {
-                return _.map(this.selected, item => {
-                    return item.id;
-                });
-            }
-        },
-        methods: {
-            emit() {
-                this.$emit('saved', this.selected);
-                this.show = false;
-            },
-            alreadyLinked(product) {
-                const result = _.find(this.selected, item => {
-                    return item.id == product.id;
-                });
-                return result;
-            },
-            attach(product) {
-                this.selected.push(product);
-            },
-            detatch(product) {
-                this.selected.splice(this.selected.indexOf(product), 1);
-            },
-            search() {
-                this.loading = true;
-                this.products = [];
-                this.requestParams.keywords = this.keywords;
-                apiRequest.send('GET', 'search', {}, this.requestParams).then(response => {
-                    this.products = response.data;
-                    this.requestParams.total_pages = response.meta.pagination.data.total_pages;
-                    this.meta = response.meta;
-                    this.loading = false;
-                });
-            },
-            changePage(page) {
-                this.requestParams.current_page = page;
-                this.search();
-            },
-            updateKeywords: _.debounce(function (e) {
-                this.keywords = e.target.value;
-                this.requestParams.current_page = 1;
-                this.search();
-            }, 500)
-        }
-    }
+export default {
+  props: {
+    buttonText: {
+      type: String,
+      default: 'Browse products',
+    },
+    buttonConfirm: {
+      type: String,
+      default: 'Browse products',
+    },
+    current: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    perPage: {
+      type: String | Number,
+      default: 12,
+    },
+  },
+  data() {
+    return {
+      show: false,
+      loading: false,
+      products: [],
+      selected: [],
+      requestParams: {
+        per_page: this.perPage,
+        current_page: 1,
+        keywords: '',
+        type: 'product',
+      },
+    };
+  },
+  mounted() {
+    this.selected = this.current;
+  },
+  computed: {
+    ids() {
+      return _.map(this.selected, item => {
+        return item.id;
+      });
+    },
+  },
+  methods: {
+    emit() {
+      this.$emit('saved', this.selected);
+      this.show = false;
+    },
+    alreadyLinked(product) {
+      const result = _.find(this.selected, item => {
+        return item.id == product.id;
+      });
+      return result;
+    },
+    attach(product) {
+      this.selected.push(product);
+    },
+    detatch(product) {
+      this.selected.splice(this.selected.indexOf(product), 1);
+    },
+    search() {
+      this.loading = true;
+      this.products = [];
+      this.requestParams.keywords = this.keywords;
+      apiRequest
+        .send('GET', 'search', {}, this.requestParams)
+        .then(response => {
+          this.products = response.data;
+          this.requestParams.total_pages =
+            response.meta.pagination.data.total_pages;
+          this.meta = response.meta;
+          this.loading = false;
+        });
+    },
+    changePage(page) {
+      this.requestParams.current_page = page;
+      this.search();
+    },
+    updateKeywords: _.debounce(function(e) {
+      this.keywords = e.target.value;
+      this.requestParams.current_page = 1;
+      this.search();
+    }, 500),
+  },
+};
 </script>
 
 <style scoped>
-
 </style>

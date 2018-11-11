@@ -1,232 +1,237 @@
 <script>
-    import Dropzone from 'vue2-dropzone'
-    export default {
-        data() {
-            return {
-                request: apiRequest,
-                deleteModalOpen: false,
-                assetToDelete: {},
-                filter: '',
-                processingAssetUrl: false,
-                failedUploads: [],
-                assetUrlType: 'external',
-                defaultTags: [],
-                urlUpload: {
-                    type: 'youtube',
-                    url: ''
-                },
-                sortableOptions: {
-                    onEnd: this.reorder,
-                    filter: '.disabled',
-                    handle: '.handle',
-                    animation: 150
-                },
-                mimeTypes: [
-                    {label: 'YouTube', value: 'youtube'},
-                    {label: 'Vimeo', value: 'vimeo'},
-                    {label: 'URL', value: 'external'},
-                ],
-                urlUploadModalOpen: false,
-                assets: [],
-                dzOptions: {
-                    headers: {
-                        'X-CSRF-TOKEN': window.Laravel.csrfToken
-                    }
-                }
-            }
+import Dropzone from 'vue2-dropzone';
+export default {
+  data() {
+    return {
+      request: apiRequest,
+      deleteModalOpen: false,
+      assetToDelete: {},
+      filter: '',
+      processingAssetUrl: false,
+      failedUploads: [],
+      assetUrlType: 'external',
+      defaultTags: [],
+      urlUpload: {
+        type: 'youtube',
+        url: '',
+      },
+      sortableOptions: {
+        onEnd: this.reorder,
+        filter: '.disabled',
+        handle: '.handle',
+        animation: 150,
+      },
+      mimeTypes: [
+        { label: 'YouTube', value: 'youtube' },
+        { label: 'Vimeo', value: 'vimeo' },
+        { label: 'URL', value: 'external' },
+      ],
+      urlUploadModalOpen: false,
+      assets: [],
+      dzOptions: {
+        headers: {
+          'X-CSRF-TOKEN': window.Laravel.csrfToken,
         },
-        mounted() {
-            this.parent.assets.data.forEach(asset => {
-                if (asset.tags.data) {
-                    asset.tags = asset.tags.data;
-                    delete asset.tags.data;
-                } else {
-                    asset.tags = [];
-                }
-                this.assets.push(asset);
-            });
-            this.urlUpload.type = this.mimeTypes[0].value;
+      },
+    };
+  },
+  mounted() {
+    this.parent.assets.data.forEach(asset => {
+      if (asset.tags.data) {
+        asset.tags = asset.tags.data;
+        delete asset.tags.data;
+      } else {
+        asset.tags = [];
+      }
+      this.assets.push(asset);
+    });
+    this.urlUpload.type = this.mimeTypes[0].value;
 
-            CandyEvent.$on('variant_asset_uploaded', event => {
-                this.assets.push(event.asset);
-            });
+    CandyEvent.$on('variant_asset_uploaded', event => {
+      this.assets.push(event.asset);
+    });
 
-            Dispatcher.add('save-media', this);
+    Dispatcher.add('save-media', this);
 
-            apiRequest.send('GET', '/tags').then(response => {
-                response.data.forEach(tag => {
-                    this.defaultTags.push(tag);
-                });
-            });
-        },
-        computed: {
-            dropzoneUrl() {
-                return '/api/assets';
-            }
-        },
-        props: {
-            assetable: {
-                type: String
-            },
-            parent: {
-                type: Object
-            },
-            token: {
-                type: String,
-                default: Laravel.csrfToken
-            }
-        },
-        methods: {
-            save() {
-                this.request.send('put', '/assets', {'assets' : this.assets})
-                    .then(response => {
-                        CandyEvent.$emit('notification', {
-                            level: 'success'
-                        });
-                    });
-            },
-            uploadUrlMedia() {
-                this.processingAssetUrl = true;
-                this.request.send('post', 'assets', {
-                    'url': this.urlUpload.url,
-                    'parent_id' : this.parent.id,
-                    'parent' : this.assetable,
-                    'mime_type': this.urlUpload.type
-                }).then(response => {
-                    this.processingAssetUrl = false;
-                    this.assets.push(response.data);
-                    CandyEvent.$emit('media_asset_uploaded', {
-                        asset: response.data
-                    });
-                    this.urlUpload = {};
-                    this.urlUploadModalOpen = false;
-                }).catch(response => {
-                    this.processingAssetUrl = false;
-                });
-            },
-            deleteAsset(event) {
-                apiRequest.send('delete', '/assets/' + this.assetToDelete.id)
-                    .then(response => {
-                        CandyEvent.$emit('notification', {
-                            level: 'success'
-                        });
-                        CandyEvent.$emit('asset_deleted', {
-                            asset: this.assetToDelete,
-                            index: this.deletedIndex
-                        });
-                        this.assets.splice(this.deletedIndex, 1);
-                        this.assetToDelete = {};
-                        this.deletedIndex = null;
-                        this.deleteModalOpen = false;
-                    });
-            },
-            reorder ({oldIndex, newIndex}) {
-                const movedItem = this.assets.splice(oldIndex, 1)[0];
-                this.assets.splice(newIndex, 0, movedItem);
-                let pos = 1;
-                this.save();
-                this.assets.forEach(asset => {
-                    asset.position = pos;
-                    pos++;
-                });
-            },
-            setPrimary(newPrimary) {
-                this.assets.forEach(asset => {
-                    if (asset.id == newPrimary.id) {
-                        asset.primary = true;
-                    } else {
-                        asset.primary = false;
-                    }
-                });
-                this.save();
-            },
-            /**
-             * Gets filtered results for the assets
-             * @param  {string} type
-             * @return {Object}
-             */
-            getFilteredResults(type) {
-                if (type) {
-                    return this.assets.filter(asset => {
-                        if (type == 'images') {
-                            return asset.kind == 'image';
-                        } else if (type == 'videos') {
-                            return asset.external && asset.kind != 'image';
-                        } else {
-                            return asset.kind != 'image' && !asset.external;
-                        }
-                    });
-                }
-                return this.assets;
-            },
-            /**
-             * Shows the delete modal for an asset
-             * @param  int index
-             * @return void
-             */
-            showDeleteModal(index) {
-                this.deletedIndex = index;
-                this.assetToDelete  = this.assets[index];
-                this.deleteModalOpen = true;
-            },
-            openUrlModal() {
-                this.urlUploadModalOpen = true;
-            },
-            closeUrlModal() {
-                this.urlUploadModalOpen = false;
-            },
-            closeDeleteModal() {
-                this.deleteModalOpen = false;
-            },
-            getIcon(type) {
-                return '/icons/file-types/' + type + '.svg';
-            },
-            detectAssetUrlType() {
-                // First clear any errors
-                this.request.clearError('url')
-
-                let value = this.urlUpload.url;
-
-                if (value.match(/youtube\.com/)) {
-                    this.urlUpload.type = 'youtube';
-                } else if (value.match(/vimeo\.com/)) {
-                    this.urlUpload.type = 'youtube';
-                } else {
-                    this.urlUpload.type = 'external';
-                }
-
-                // Refresh selectpicker
-                this.$refs.urlTypeDropdown.refresh();
-            },
-            /**
-             * Dropzone event Methods
-             */
-            uploadSuccess(file, response) {
-                this.$refs.mediaDropzone.removeFile(file);
-                response.data.tags = response.data.tags.data;
-
-                CandyEvent.$emit('media_asset_uploaded', {
-                    asset: response.data
-                });
-
-                this.assets.push(response.data);
-            },
-            appendParams(file, xhr, formData) {
-                formData.append('parent', this.assetable);
-                formData.append('parent_id', this.parent.id);
-            },
-            uploadError(file, response) {
-                this.$refs.mediaDropzone.removeFile(file);
-                this.failedUploads.push({
-                    filename: file.name,
-                    errors: response.file ? response.file : [response]
-                });
-            }
-        },
-        components: {
-            Dropzone
+    apiRequest.send('GET', '/tags').then(response => {
+      response.data.forEach(tag => {
+        this.defaultTags.push(tag);
+      });
+    });
+  },
+  computed: {
+    dropzoneUrl() {
+      return '/api/assets';
+    },
+  },
+  props: {
+    assetable: {
+      type: String,
+    },
+    parent: {
+      type: Object,
+    },
+    token: {
+      type: String,
+      default: Laravel.csrfToken,
+    },
+  },
+  methods: {
+    save() {
+      this.request
+        .send('put', '/assets', { assets: this.assets })
+        .then(response => {
+          CandyEvent.$emit('notification', {
+            level: 'success',
+          });
+        });
+    },
+    uploadUrlMedia() {
+      this.processingAssetUrl = true;
+      this.request
+        .send('post', 'assets', {
+          url: this.urlUpload.url,
+          parent_id: this.parent.id,
+          parent: this.assetable,
+          mime_type: this.urlUpload.type,
+        })
+        .then(response => {
+          this.processingAssetUrl = false;
+          this.assets.push(response.data);
+          CandyEvent.$emit('media_asset_uploaded', {
+            asset: response.data,
+          });
+          this.urlUpload = {};
+          this.urlUploadModalOpen = false;
+        })
+        .catch(response => {
+          this.processingAssetUrl = false;
+        });
+    },
+    deleteAsset(event) {
+      apiRequest
+        .send('delete', '/assets/' + this.assetToDelete.id)
+        .then(response => {
+          CandyEvent.$emit('notification', {
+            level: 'success',
+          });
+          CandyEvent.$emit('asset_deleted', {
+            asset: this.assetToDelete,
+            index: this.deletedIndex,
+          });
+          this.assets.splice(this.deletedIndex, 1);
+          this.assetToDelete = {};
+          this.deletedIndex = null;
+          this.deleteModalOpen = false;
+        });
+    },
+    reorder({ oldIndex, newIndex }) {
+      const movedItem = this.assets.splice(oldIndex, 1)[0];
+      this.assets.splice(newIndex, 0, movedItem);
+      let pos = 1;
+      this.save();
+      this.assets.forEach(asset => {
+        asset.position = pos;
+        pos++;
+      });
+    },
+    setPrimary(newPrimary) {
+      this.assets.forEach(asset => {
+        if (asset.id == newPrimary.id) {
+          asset.primary = true;
+        } else {
+          asset.primary = false;
         }
-    }
+      });
+      this.save();
+    },
+    /**
+     * Gets filtered results for the assets
+     * @param  {string} type
+     * @return {Object}
+     */
+    getFilteredResults(type) {
+      if (type) {
+        return this.assets.filter(asset => {
+          if (type == 'images') {
+            return asset.kind == 'image';
+          } else if (type == 'videos') {
+            return asset.external && asset.kind != 'image';
+          } else {
+            return asset.kind != 'image' && !asset.external;
+          }
+        });
+      }
+      return this.assets;
+    },
+    /**
+     * Shows the delete modal for an asset
+     * @param  int index
+     * @return void
+     */
+    showDeleteModal(index) {
+      this.deletedIndex = index;
+      this.assetToDelete = this.assets[index];
+      this.deleteModalOpen = true;
+    },
+    openUrlModal() {
+      this.urlUploadModalOpen = true;
+    },
+    closeUrlModal() {
+      this.urlUploadModalOpen = false;
+    },
+    closeDeleteModal() {
+      this.deleteModalOpen = false;
+    },
+    getIcon(type) {
+      return '/icons/file-types/' + type + '.svg';
+    },
+    detectAssetUrlType() {
+      // First clear any errors
+      this.request.clearError('url');
+
+      let value = this.urlUpload.url;
+
+      if (value.match(/youtube\.com/)) {
+        this.urlUpload.type = 'youtube';
+      } else if (value.match(/vimeo\.com/)) {
+        this.urlUpload.type = 'youtube';
+      } else {
+        this.urlUpload.type = 'external';
+      }
+
+      // Refresh selectpicker
+      this.$refs.urlTypeDropdown.refresh();
+    },
+    /**
+     * Dropzone event Methods
+     */
+    uploadSuccess(file, response) {
+      this.$refs.mediaDropzone.removeFile(file);
+      response.data.tags = response.data.tags.data;
+
+      CandyEvent.$emit('media_asset_uploaded', {
+        asset: response.data,
+      });
+
+      this.assets.push(response.data);
+    },
+    appendParams(file, xhr, formData) {
+      formData.append('parent', this.assetable);
+      formData.append('parent_id', this.parent.id);
+    },
+    uploadError(file, response) {
+      this.$refs.mediaDropzone.removeFile(file);
+      this.failedUploads.push({
+        filename: file.name,
+        errors: response.file ? response.file : [response],
+      });
+    },
+  },
+  components: {
+    Dropzone,
+  },
+};
 </script>
 
 <template>
@@ -234,35 +239,35 @@
         <div class="sub-content section block">
             <div class="row">
                 <div class="col-xs-12 col-md-12">
-                    <h4>Media</h4>
+                    <h4>{{$t('forms.Media')}}</h4>
                     <div class="custom-radio-group">
-                        <span class="group-label">Toggle Media:</span>
+                        <span class="group-label">{{$t('forms.ToggleMedia')}}:</span>
                         <div class="toggle-radio">
                             <input type="radio" id="allMedia" value="" checked="checked" v-model="filter">
                             <label for="allMedia">
                                 <span class="check"></span>
-                                <span class="faux-label">All Media</span>
+                                <span class="faux-label">{{$t('forms.AllMedia')}}</span>
                             </label>
                         </div>
                         <div class="toggle-radio">
                             <input type="radio" id="images" value="images" v-model="filter">
                             <label for="images">
                                 <span class="check"></span>
-                                <span class="faux-label">Images</span>
+                                <span class="faux-label">{{$t('forms.Images')}}</span>
                             </label>
                         </div>
                         <div class="toggle-radio">
                             <input type="radio" id="files" value="files" v-model="filter">
                             <label for="files">
                                 <span class="check"></span>
-                                <span class="faux-label">Files</span>
+                                <span class="faux-label">{{$t('forms.Files')}}</span>
                             </label>
                         </div>
                         <div class="toggle-radio">
                             <input type="radio" id="videos" value="videos" v-model="filter">
                             <label for="videos">
                                 <span class="check"></span>
-                                <span class="faux-label">Videos</span>
+                                <span class="faux-label">{{$t('forms.Videos')}}</span>
                             </label>
                         </div>
                     </div>
@@ -272,10 +277,10 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>Title/Alt Tag</th>
-                            <th>Description</th>
-                            <th width="230">Tags</th>
-                            <th>File Type</th>
+                            <th>{{$t('forms.TitleAltTag')}}</th>
+                            <th>{{$t('forms.Description')}}</th>
+                            <th width="230">{{$t('forms.Tags')}}</th>
+                            <th>{{$t('forms.FileType')}}</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -300,7 +305,7 @@
                                         <input type="radio" :id="asset.id" value="true" v-model="asset.primary" @click="setPrimary(asset)">
                                         <label :for="asset.id">
                                             <span class="check"></span>
-                                            <span class="faux-label">Primary</span>
+                                            <span class="faux-label">{{$t('forms.Primary')}}</span>
                                         </label>
                                     </div>
                                 </td>
@@ -327,7 +332,7 @@
                         <tfoot v-if="!getFilteredResults(filter).length">
                             <tr>
                               <td colspan="2">
-                                <span class="text-muted">No assets found</span>
+                                <span class="text-muted">{{$t('forms.NoAssetsFound')}}</span>
                               </td>
                             </tr>
                         </tfoot>
@@ -337,7 +342,7 @@
             </div>
         </div>
         <div class="sub-nav media-upload">
-            <button type="button" class="btn btn-primary btn-full" @click="openUrlModal">Add by URL</button>
+            <button type="button" class="btn btn-primary btn-full" @click="openUrlModal">{{$t('forms.AddURL')}}</button>
             <candy-alert :shown="true" level="danger" v-for="(file, index) in failedUploads" :key="index">
                 <strong>{{ file.filename }}</strong> <br>
                 <ul class="list-unstyled">
@@ -359,23 +364,23 @@
             >
                 <div class="dz-default dz-message media-box">
                     <i class="fa fa-upload icon" aria-hidden="true"></i>
-                    <p>Drop files here or click to upload</p>
+                    <p>{{$t('forms.DropFilesToUpload')}}</p>
                 </div>
                 <input type="hidden" name="_token" :value="token">
             </dropzone>
         </div>
-        <candy-modal title="Add media by URL" v-show="urlUploadModalOpen" @closed="closeUrlModal">
+        <candy-modal :title="$t('forms.AddMediaURL')" v-show="urlUploadModalOpen" @closed="closeUrlModal">
             <div slot="body">
                 <div class="row">
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
-                            <label>Type</label>
+                            <label>{{$t('forms.Type')}}</label>
                             <candy-select ref="urlTypeDropdown" :options="mimeTypes" v-model="urlUpload.type"></candy-select>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-9">
                         <div class="form-group">
-                            <label for="urlUpload">Enter the URL to the asset.</label>
+                            <label for="urlUpload">{{$t('forms.EnterURLAsset')}}</label>
                             <input type="text" id="urlUpload" class="form-control" v-model="urlUpload.url" @blur="detectAssetUrlType()">
                         </div>
                         <span class="text-danger" v-if="request.getError('url')" v-text="request.getError('url')"></span>
@@ -384,17 +389,17 @@
             </div>
             <template slot="footer">
                 <button type="button" class="btn btn-primary" @click="uploadUrlMedia" :disabled="processingAssetUrl">
-                    <template v-if="!processingAssetUrl">Add media</template>
-                    <template v-else>Processing</template>
+                    <template v-if="!processingAssetUrl">{{$t('forms.AddMedia')}}</template>
+                    <template v-else>{{$t('forms.Processing')}}</template>
                 </button>
             </template>
         </candy-modal>
-        <candy-modal title="Are you wish to delete this asset?" v-show="deleteModalOpen" @closed="closeDeleteModal">
+        <candy-modal $title="$t('forms.DeleteAssetPrompt')" v-show="deleteModalOpen" @closed="closeDeleteModal">
             <div slot="body">
-                <p>Once deleted this action can not be undone</p>
+                <p>{{$t('forms.NotUndo')}}</p>
             </div>
             <template slot="footer">
-                <button type="button" class="btn btn-primary" @click="deleteAsset">Confirm Deletion</button>
+                <button type="button" class="btn btn-primary" @click="deleteAsset">{{$t('forms.ConfirmDeletion')}}</button>
             </template>
         </candy-modal>
     </div>

@@ -1,117 +1,117 @@
 <script>
-    export default {
-        data() {
-            return {
-                language: locale.current(),
-                selectAll: false,
-                checkedCount: 0,
-                selected: []
-            }
-        },
-        props: {
-            loaded: false,
-            checked: {
-                type: Array,
-                default() {
-                    return [];
-                }
-            },
-            itemUrl: {
-                type: String
-            },
-            items: {
-                type: Array
-            },
-            params: {
-                type: Object
-            },
-            tableClass: {
-                type: String
-            },
-            pagination: {}
-        },
-        watch: {
-            selected: function(val) {
-                this.checkedCount = val.length;
-                this.selectAll = (val.length === this.items.length);
-                this.$emit('selected', val);
-            },
-            selectAll: function(val) {
-                let selected = [];
+export default {
+  data() {
+    return {
+      language: locale.current(),
+      selectAll: false,
+      checkedCount: 0,
+      selected: [],
+    };
+  },
+  props: {
+    loaded: false,
+    checked: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    itemUrl: {
+      type: String,
+    },
+    items: {
+      type: Array,
+    },
+    params: {
+      type: Object,
+    },
+    tableClass: {
+      type: String,
+    },
+    pagination: {},
+  },
+  watch: {
+    selected: function(val) {
+      this.checkedCount = val.length;
+      this.selectAll = val.length === this.items.length;
+      this.$emit('selected', val);
+    },
+    selectAll: function(val) {
+      let selected = [];
 
-                if (val) {
-                    this.items.forEach(function (item) {
-                        selected.push(item.id);
-                    });
-                }
-                this.selected = selected;
-            }
-        },
-        mounted() {
-            this.checked.forEach(val => {
-                this.selected.push(val);
-            });
-        },
-        methods: {
-            getRoute: function (data) {
+      if (val) {
+        this.items.forEach(function(item) {
+          selected.push(item.id);
+        });
+      }
+      this.selected = selected;
+    },
+  },
+  mounted() {
+    this.checked.forEach(val => {
+      this.selected.push(val);
+    });
+  },
+  methods: {
+    getRoute: function(data) {
+      let slug = '';
 
-                let slug = '';
+      data.routes.data.forEach(
+        function(route) {
+          if (route.locale === this.language) {
+            slug = route.slug;
+          }
+        }.bind(this),
+      );
 
-                data.routes.data.forEach(function (route) {
-                    if(route.locale === this.language) {
-                        slug = route.slug;
-                    }
-                }.bind(this));
+      return slug;
+    },
+    getUrl(id) {
+      return this.itemUrl + id;
+    },
+    getAvailability(data, association, field) {
+      let items = data[association] ? data[association].data : [];
 
-                return slug;
-            },
-            getUrl(id) {
-                return this.itemUrl + id;
-            },
-            getAvailability(data, association, field) {
+      if (!items.length) {
+        return 'None';
+      }
 
-                let items = data[association] ? data[association].data : [];
+      let label = 'All',
+        visible = [];
 
-                if (!items.length) {
-                    return 'None';
-                }
-
-                let label = 'All',
-                    visible = [];
-
-                items.forEach(item => {
-                    if (item.published_at) {
-                        let now = moment();
-                        let publish_date = moment(item.published_at);
-                        if (!publish_date.isAfter(now)) {
-                            visible.push(item.name);
-                        }
-                    } else if (item[field]) {
-                        visible.push(item.name);
-                    }
-                });
-
-                if (visible.length == items.length) {
-                    return 'All';
-                } else if (!visible.length) {
-                    return 'None';
-                }
-                return visible.join(', ');
-            },
-            thumbnail(element) {
-                if (element.thumbnail) {
-                    return element.thumbnail.data.thumbnail;
-                }
-                return '/hub/images/placeholder/no-image.svg';
-            },
-            selectAllClick() {
-                this.selectAll = !this.selectAll;
-            },
-            changePage(page) {
-                this.$emit('change', page);
-            }
+      items.forEach(item => {
+        if (item.published_at) {
+          let now = moment();
+          let publish_date = moment(item.published_at);
+          if (!publish_date.isAfter(now)) {
+            visible.push(item.name);
+          }
+        } else if (item[field]) {
+          visible.push(item.name);
         }
-    }
+      });
+
+      if (visible.length == items.length) {
+        return 'All';
+      } else if (!visible.length) {
+        return 'None';
+      }
+      return visible.join(', ');
+    },
+    thumbnail(element) {
+      if (element.thumbnail) {
+        return element.thumbnail.data.thumbnail;
+      }
+      return '/hub/images/placeholder/no-image.svg';
+    },
+    selectAllClick() {
+      this.selectAll = !this.selectAll;
+    },
+    changePage(page) {
+      this.$emit('change', page);
+    },
+  },
+};
 </script>
 
 <template>
@@ -176,7 +176,7 @@
             <tbody class="text-center" v-else-if="loaded && items.length === 0">
                 <tr>
                     <td :colspan="params.columns.length+1" style="padding:40px;">
-                        No items found
+                        {{$t('forms.NoItemsFound')}}
                     </td>
                 </tr>
             </tbody>
