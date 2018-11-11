@@ -98,18 +98,18 @@
           <div class="col-xs-12 col-md-11">
             <div class="row">
               <div class="col-xs-12 col-sm-6">
-                <h4>Redirect URLs</h4>
+                <h4>{{$t('element.RedirectURLs')}}</h4>
               </div>
               <div class="col-xs-12 col-sm-6 text-right">
-                <button type="button" class="btn btn-primary" @click="saveModalOpen = true">Add Redirect</button>
+                <button type="button" class="btn btn-primary" @click="saveModalOpen = true">{{$t('element.AddRedirect')}}</button>
               </div>
             </div>
             <hr>
             <table class="table">
               <thead>
                 <tr>
-                  <td width="30%">Redirect URL</td>
-                  <td>Description</td>
+                  <td width="30%">{{$t('element.RedirectURL')}}</td>
+                  <td>{{$t('element.Description')}}</td>
                 </tr>
               </thead>
               <tbody>
@@ -126,16 +126,16 @@
               <tfoot v-if="!redirects.length">
                 <tr>
                   <td colspan="2">
-                    <span class="text-muted">You currently have no redirects</span>
+                    <span class="text-muted">{{$t('element.CurrentlyNoRedirects')}}</span>
                   </td>
                 </tr>
               </tfoot>
             </table>
           </div>
         </div>
-       <candy-modal title="Are you wish to delete this Route?" v-show="deleteModalOpen" @closed="closeDeleteModal">
+       <candy-modal :title="$t('element.DeleteRoute')" v-show="deleteModalOpen" @closed="closeDeleteModal">
            <div slot="body">
-               <p>Once deleted this action can not be undone</p>
+               <p>{{$t('element.NotUndo')}}</p>
                <div class="form-group">
                    <input type="text" class="form-control" :value="redirectToDelete.slug" disabled>
                    <span class="text-danger" v-if="request.getError()" v-text="request.getError()"></span>
@@ -143,24 +143,24 @@
                </div>
            </div>
            <template slot="footer">
-               <button type="button" class="btn btn-primary" @click="deleteRedirect">Confirm Deletion</button>
+               <button type="button" class="btn btn-primary" @click="deleteRedirect">{{$t('element.ConfirmDeletion')}}</button>
            </template>
        </candy-modal>
-       <candy-modal title="Add redirect" v-show="saveModalOpen" @closed="saveModalOpen = false">
+       <candy-modal :title="$t('element.AddRedirect')" v-show="saveModalOpen" @closed="saveModalOpen = false">
            <div slot="body">
                <div class="form-group">
-                   <label for="redirectURL">Enter the URL you wish to redirect to.</label>
+                   <label for="redirectURL">{{$t('element.EnterURLWish')}}</label>
                    <input type="text" class="form-control" v-model="newUrl.slug" @input="request.clearError('url')">
-                   <span class="text-info" v-if="newUrl.slug && slugify != newUrl.slug">Your url will be sanitized to: <code>{{ slugify }}</code></span>
+                   <span class="text-info" v-if="newUrl.slug && slugify != newUrl.slug">{{$t('element.urlPrompt')}} <code>{{ slugify }}</code></span>
                    <span class="text-danger" v-if="request.getError('slug')" v-text="request.getError('slug')"></span>
                </div>
                <div class="form-group">
-                   <label for="explaination">Brief description for the redirect</label>
+                   <label for="explaination">{{$t('element.Briefdescription')}}</label>
                    <textarea id="explaination" class="form-control" v-model="newUrl.description"></textarea>
                </div>
            </div>
            <template slot="footer">
-               <button class="btn btn-primary" @click="saveRedirect()">Save Redirect</button>
+               <button class="btn btn-primary" @click="saveRedirect()">{{$t('element.SaveRedirect')}}</button>
            </template>
        </candy-modal>
    </div>

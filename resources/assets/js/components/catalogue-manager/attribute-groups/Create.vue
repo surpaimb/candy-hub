@@ -22,20 +22,20 @@
 
 <template>
     <div>
-        <button class="btn btn-success" @click="modal = true"><fa icon="plus" class="fa-first"></fa> Create Attribute Group</button>
+        <button class="btn btn-success" @click="modal = true"><fa icon="plus" class="fa-first"></fa>{{$t('attribute.createAttributeGroup')}}</button>
         <candy-modal title="Create Attribute" v-show="modal" size="modal-md" @closed="modal = false">
             <div slot="body">
                 <div class="form-group">
-                    <label>Name</label>
+                    <label>{{$t('attribute.name')}}</label>
                     <input class="form-control">
                 </div>
                 <div class="form-group">
-                    <label>Handle</label>
+                    <label>{{$t('attribute.handle')}}</label>
                     <input class="form-control">
                 </div>
             </div>
             <template slot="footer">
-                <button type="button" class="btn btn-primary">Create Attribute Group</button>
+                <button type="button" class="btn btn-primary">{{$t('attribute.createAttributeGroup')}}</button>
             </template>
         </candy-modal>
     </div>

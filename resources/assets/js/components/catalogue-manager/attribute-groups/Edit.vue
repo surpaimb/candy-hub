@@ -90,19 +90,19 @@
                                     <div class="col-md-12">
                                         <template v-if="attribute.system">
                                             <div class="alert alert-warning">
-                                                This is a system required attribute so editing may be limited on fields.
+                                                {{$t('attribute.editAttributePrompt')}}
                                             </div>
                                         </template>
                                         <div class="col-xs-12 text-right">
                                             <div class="form-inline">
                                                 <div class="form-group">
                                                     <div v-show="translating">
-                                                        <label class="sr-only">Language</label>
+                                                        <label class="sr-only">{{$t('attribute.Language')}}</label>
                                                         <candy-select :options="languages" v-model="translationLanguage" v-if="languages.length"></candy-select>
                                                     </div>
                                                 </div>
-                                                <button v-if="!translating" class="btn btn-default" @click="translating = true">Translate</button>
-                                                <button v-if="translating" class="btn btn-default" @click="translating = false">Hide Translation</button>
+                                                <button v-if="!translating" class="btn btn-default" @click="translating = true">{{$t('attribute.Translate')}}</button>
+                                                <button v-if="translating" class="btn btn-default" @click="translating = false">{{$t('attribute.HideTranslation')}}</button>
                                             </div>
 
                                         </div>
@@ -110,23 +110,23 @@
                                             :params="{'translating':translating, 'language':translationLanguage}">
                                         </candy-option-translatable>
                                         <div class="form-group">
-                                            <label>Handle</label>
+                                            <label>{{$t('attribute.handle')}}</label>
                                             <input class="form-control" v-model="group.handle">
                                         </div>
                                         <hr>
                                         <div class="row">
                                             <div class="col-md-8">
-                                                <h4>Attributes</h4>
+                                                <h4>{{$t('attribute.Attributes')}}</h4>
                                             </div>
                                         </div>
                                         <table class="table">
                                             <thead>
                                                 <tr>
                                                     <th></th>
-                                                    <th>Name</th>
-                                                    <th>Handle</th>
-                                                    <th>Type</th>
-                                                    <th>Searchable</th>
+                                                    <th>{{$t('attribute.name')}}</th>
+                                                    <th>{{$t('attribute.handle')}}</th>
+                                                    <th>{{$t('attribute.Type')}}</th>
+                                                    <th>{{$t('attribute.Searchable')}}</th>
                                                 </tr>
                                             </thead>
                                             <tbody v-sortable="sortableOptions">

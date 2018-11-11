@@ -4,10 +4,10 @@
             <div class="col-xs-12 col-md-12">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>Products</h4>
+                        <h4>{{$t('collection.Products')}}</h4>
                     </div>
                     <div class="col-xs-12 col-sm-6 text-right">
-                        <button type="button" class="btn btn-primary" @click="showModal = true">Add a Product</button>
+                        <button type="button" class="btn btn-primary" @click="showModal = true">{{$t('collection.AddProduct')}}</button>
                     </div>
                 </div>
 
@@ -15,7 +15,7 @@
                 <table class="table table-striped sortable">
                     <thead>
                         <tr>
-                            <th>Product Name</th>
+                            <th>{{$t('collection.ProductName')}}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -24,7 +24,7 @@
                             <td>{{ product|attribute('name') }}</td>
                             <td align="right">
                                 <button class="btn btn-sm btn-default btn-action" @click="remove(index)">
-                                    <i class="fa fa-trash-o" aria-hidden="true" title="Delete"></i>
+                                    <i class="fa fa-trash-o" aria-hidden="true" :title="$t('common.Delete')"></i>
                                 </button>
                             </td>
                         </tr>
@@ -38,7 +38,7 @@
         <candy-modal title="Add product associations" v-show="showModal" @closed="showModal = false">
             <div slot="body">
             <div class="form-group">
-                <label class="sr-only">Search</label>
+                <label class="sr-only">{{$t('common.Search')}}</label>
                 <input type="text" class="form-control search" placeholder="Search Products" v-on:input="updateKeywords">
             </div>
             <hr>
@@ -46,7 +46,7 @@
                 <thead>
                 <tr>
                     <th> </th>
-                    <th>Name</th>
+                    <th>{{$t('collection.Name')}}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -95,7 +95,7 @@
                 <tr v-if="!loading && !products">
                     <td colspan="25">
                     <div class="alert alert-info">
-                        Start typing to see products
+                        {{$t('collection.StartSeeProduct')}}
                     </div>
                     </td>
                 </tr>
@@ -107,7 +107,7 @@
             </div>
             </div>
             <template slot="footer">
-                <button class="btn btn-primary" @click="save()">Associate products</button>
+                <button class="btn btn-primary" @click="save()">{{$t('collection.AssociateProducts')}}</button>
             </template>
         </candy-modal>
     </div>

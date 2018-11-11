@@ -71,26 +71,26 @@
 
             <transition name="fade">
                 <candy-tabs initial="orderdetails">
-                    <candy-tab name="Attribute Details" handle="collection-details" dispatch="save-order" :selected="true">
+                    <candy-tab :name="$t('attribute.AttributeDetails')" handle="collection-details" dispatch="save-order" :selected="true">
                         <div class="panel">
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <template v-if="attribute.system">
                                             <div class="alert alert-warning">
-                                                This is a system required attribute so editing may be limited on fields.
+                                                {{$t('attribute.editAttributePrompt')}}
                                             </div>
                                         </template>
                                         <div class="col-xs-12 text-right">
                                             <div class="form-inline">
                                                 <div class="form-group">
                                                     <div v-show="translating">
-                                                        <label class="sr-only">Language</label>
+                                                        <label class="sr-only">{{$t('attribute.Language')}}</label>
                                                         <candy-select :options="languages" v-model="translationLanguage" v-if="languages.length"></candy-select>
                                                     </div>
                                                 </div>
-                                                <button v-if="!translating" class="btn btn-default" @click="translating = true">Translate</button>
-                                                <button v-if="translating" class="btn btn-default" @click="translating = false">Hide Translation</button>
+                                                <button v-if="!translating" class="btn btn-default" @click="translating = true">{{$t('attribute.Translate')}}</button>
+                                                <button v-if="translating" class="btn btn-default" @click="translating = false">{{$t('attribute.HideTranslation')}}</button>
                                             </div>
 
                                         </div>
@@ -98,20 +98,20 @@
                                             :params="{'translating':translating, 'language':translationLanguage}">
                                         </candy-option-translatable>
                                         <div class="form-group">
-                                            <label>Handle</label>
+                                            <label>{{$t('attribute.handle')}}</label>
                                             <input class="form-control" v-model="attribute.handle" :readonly="attribute.system">
                                         </div>
                                         <div class="form-group">
-                                            <label>Type</label>
+                                            <label>{{$t('attribute.Type')}}</label>
                                             <select class="form-control" v-model="attribute.type" :disabled="attribute.system">
-                                                <option value="text">Text</option>
-                                                <option value="richtext">Richtext</option>
-                                                <option value="select">Select</option>
+                                                <option value="text">{{$t('attribute.Text')}}</option>
+                                                <option value="richtext">{{$t('attribute.Richtext')}}</option>
+                                                <option value="select">{{$t('attribute.Select')}}</option>
                                             </select>
                                         </div>
                                         <template v-if="attribute.type == 'select'">
                                             <div class="form-group">
-                                                <label>Lookups</label>
+                                                <label>{{$t('attribute.Lookups')}}</label>
                                                 <editable-table></editable-table>
                                             </div>
                                         </template>
@@ -120,24 +120,24 @@
                                         <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th>Settings</th>
+                                                    <th>{{$t('attribute.Settings')}}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td><label for="searchable">Searchable</label></td>
+                                                    <td><label for="searchable">{{$t('attribute.Searchable')}}</label></td>
                                                     <td><input type="checkbox" v-model="attribute.searchable" id="searchable" :disabled="attribute.system"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><label for="filterable">Filterable</label></td>
+                                                    <td><label for="filterable">{{$t('attribute.Filterable')}}</label></td>
                                                     <td><input type="checkbox" v-model="attribute.filterable" id="filterable" :disabled="attribute.system"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><label for="required">Required</label></td>
+                                                    <td><label for="required">{{$t('attribute.Required')}}</label></td>
                                                     <td><input type="checkbox" v-model="attribute.required" id="required" :disabled="attribute.system"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><label for="required">Translatable</label></td>
+                                                    <td><label for="required">{{$t('attribute.Translatable')}}</label></td>
                                                     <td><input type="checkbox" v-model="attribute.translatable" id="required" :disabled="attribute.system"></td>
                                                 </tr>
                                                 <!-- <tr>
@@ -148,10 +148,10 @@
                                         </table>
                                         <div class="form-group">
                                             <label>
-                                                Attribute Group
+                                                {{$t('attribute.AttributeGroup')}}
                                             </label>
                                             <template v-if="!changeGroup">
-                                                <br><strong>{{ attribute.group.data.name|t }} </strong>   &middot; <a href="" @click.prevent="changeGroup = true">change</a> / <a :href="viewGroup(attribute.group_id)">view</a>
+                                                <br><strong>{{ attribute.group.data.name|t }} </strong>   &middot; <a href="" @click.prevent="changeGroup = true">{{$t('attribute.change')}}</a> / <a :href="viewGroup(attribute.group_id)">{{$t('attribute.view')}}</a>
                                             </template>
                                             <select class="form-control" v-model="attribute.group_id" v-if="changeGroup" @change="changeGroup = false">
                                                 <option v-for="group in groups" :value="group.id">

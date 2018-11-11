@@ -49,13 +49,13 @@
                 <table class="table table-striped collection-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Handle</th>
-                            <th>Group</th>
-                            <th>Type</th>
-                            <th>Searchable</th>
-                            <th>Required</th>
+                            <th>{{$t('attribute.ID')}}</th>
+                            <th>{{$t('attribute.name')}}</th>
+                            <th>{{$t('attribute.handle')}}</th>
+                            <th>{{$t('attribute.Group')}}</th>
+                            <th>{{$t('attribute.Type')}}</th>
+                            <th>{{$t('attribute.Searchable')}}</th>
+                            <th>{{$t('attribute.Required')}}</th>
                         </tr>
                     </thead>
                     <tbody v-if="loaded">

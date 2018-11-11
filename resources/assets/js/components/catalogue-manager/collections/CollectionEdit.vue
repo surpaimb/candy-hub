@@ -88,7 +88,7 @@
 
             <transition name="fade">
                 <candy-tabs initial="collectiondetails">
-                    <candy-tab name="Collection Details" handle="collection-details" :selected="true" dispatch="collection-details">
+                    <candy-tab :name="$t('collection.CollectionDetails')" handle="collection-details" :selected="true" dispatch="collection-details">
                         <candy-tabs nested="true">
                             <candy-tab v-for="(group, index) in attribute_groups" :name="group.name" :handle="group.id" :key="group.id" :selected="index == 0 ? true : false" dispatch="collection-details">
                                 <candy-collection-details :collection="collection" :languages="languages" :group="group">   </candy-collection-details>
@@ -96,15 +96,15 @@
                         </candy-tabs>
                     </candy-tab>
 
-                    <candy-tab name="Media" dispatch="save-media">
+                    <candy-tab :name="$t('collection.Media')" dispatch="save-media">
                         <candy-media assetable="collections" :parent="collection"></candy-media>
                     </candy-tab>
 
-                    <candy-tab name="Availability" handle="collection-availability" dispatch="collection-availability">
+                    <candy-tab :name="$t('collection.Availability')" handle="collection-availability" dispatch="collection-availability">
                         <candy-collection-availability :collection="collection" :languages="languages"></candy-collection-availability>
                     </candy-tab>
 
-                    <candy-tab name="Associations">
+                    <candy-tab :name="$t('collection.Associations')">
                         <candy-tabs nested="true">
                             <candy-tab name="Products" :selected="true">
                                 <candy-collection-products :collection-id="collection.id" :products="collection.products.data"></candy-collection-products>
@@ -112,12 +112,12 @@
                         </candy-tabs>
                     </candy-tab>
 
-                    <candy-tab name="URLS">
+                    <candy-tab :name="$t('collection.URLS')">
                         <candy-tabs nested="true">
-                            <candy-tab name="Locale URLS" handle="locale-urls" :selected="true">
+                            <candy-tab :name="$t('collection.LocaleURLS')" handle="locale-urls" :selected="true">
                                 <candy-urls :languages="languages" :routes="routes" :model="collection" endpoint="collections"></candy-urls>
                             </candy-tab>
-                            <candy-tab name="Redirects" handle="redirects">
+                            <candy-tab :name="$t('collection.Redirects')" handle="redirects">
                                 <candy-redirects :model="collection" endpoint="collections" :routes="routes"></candy-redirects>
                             </candy-tab>
                         </candy-tabs>

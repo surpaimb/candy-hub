@@ -94,24 +94,24 @@
                 <div class="col-xs-12 col-md-12">
                     <div class="row">
                         <div class="col-md-8">
-                            <h4>Product Positioning</h4>
-                            <span class="text-warning">If product is unavailable for a customer, the next one in the order will be shown</span>
+                            <h4>{{$t('category.ProductPositioning')}}</h4>
+                            <span class="text-warning">{{$t('category.orderWillBeShown')}}</span>
                         </div>
                         <div class="col-md-2">
                             <candy-product-browser
                                 :current="products"
-                                button-text="Add Product"
-                                button-confirm="Associate Products"
+                                :button-text="$t('category.AddProduct')"
+                                :button-confirm="$t('category.AssociateProducts')"
                                 @saved="add"
                             >
                             </candy-product-browser>
                         </div>
                         <div class="col-md-2">
-                            <label>Sort type</label>
+                            <label>{{$t('category.Sorttype')}}</label>
                             <select v-model="sortType" class="form-control" @change="sortProducts">
-                                <option value="min_price:asc">Price Low/High</option>
-                                <option value="max_price:desc">Price High/Low</option>
-                                <option value="custom">Custom</option>
+                                <option value="min_price:asc">{{$t('category.PriceLowHigh')}}</option>
+                                <option value="max_price:desc">{{$t('category.PriceHighLow')}}</option>
+                                <option value="custom">{{$t('category.Custom')}}</option>
                             </select>
                         </div>
                     </div>
@@ -119,15 +119,15 @@
                     <hr>
 
                     <div class="alert alert-info" v-if="sortType != 'custom'">
-                        <strong><i class="fa fa-exclamation-circle"></i> Please note</strong>
-                        <p>Ordering by price can be influenced by customer group pricing and so may be different from the order shown below. For complete control, choose <strong>custom</strong> from the sort type above</p>
+                        <strong><i class="fa fa-exclamation-circle"></i> {{$t('category.PleaseNote')}}</strong>
+                        <p>{{$t('category.OrderingPriceInfluenced')}}</p>
                     </div>
 
                     <table class="table table-striped sortable">
                         <thead>
                             <tr>
                                 <th v-if="sortType == 'custom'"></th>
-                                <th>Product</th>
+                                <th>{{$t('category.Product')}}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -150,7 +150,7 @@
                                 <td>{{ product.object|attribute('name') }}</td>
                                 <td align="right">
                                     <button class="btn btn-sm btn-default btn-action" @click="remove(index)">
-                                        <i class="fa fa-trash-o" aria-hidden="true" title="Delete"></i>
+                                        <i class="fa fa-trash-o" aria-hidden="true" :title="$t('common.Delete')"></i>
                                     </button>
                                 </td>
                             </tr>

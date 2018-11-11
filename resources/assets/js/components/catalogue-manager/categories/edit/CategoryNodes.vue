@@ -4,9 +4,9 @@
             <div class="col-xs-12 col-md-12">
                 <div class="row">
                     <div class="col-md-9">
-                        <h4>Category nodes</h4>
+                        <h4>{{$t('category.CategoryNodes')}}</h4>
                         <span class="text-warning">
-                            These are the direct descendants. To view further down the tree, select a category.
+                            {{$t('category.SelectACategory')}}
                         </span>
                     </div>
                 </div>
@@ -15,9 +15,9 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Category</th>
-                            <th>Children</th>
-                            <th>Products</th>
+                            <th>{{$t('category.Category')}}</th>
+                            <th>{{$t('category.Children')}}</th>
+                            <th>{{$t('category.Products')}}</th>
                         </tr>
                     </thead>
                     <tbody  v-sortable="sortableOptions">
@@ -44,8 +44,8 @@
                                 <td>
                                     {{ item.products_count }}
                                     <template v-if="item.products_count">
-                                        <a href="#" @click.prevent="expand(item.id)" v-if="!isExpanded(item.id)">Expand</a>
-                                        <a href="#" @click.prevent="collapse(item.id)" v-else>Collapse</a>
+                                        <a href="#" @click.prevent="expand(item.id)" v-if="!isExpanded(item.id)">{{$t('category.Expand')}}</a>
+                                        <a href="#" @click.prevent="collapse(item.id)" v-else>{{$t('category.Collapse')}}</a>
                                     </template>
                                 </td>
                             </tr>
@@ -55,7 +55,7 @@
                                         <table class="table product-table">
                                         <thead>
                                             <tr>
-                                                <th>Product Name</th>
+                                                <th>{{$t('category.ProductName')}}</th>
                                             </tr>
                                         </thead>
                                         <tbody>

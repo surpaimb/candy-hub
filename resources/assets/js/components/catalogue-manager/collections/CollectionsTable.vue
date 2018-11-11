@@ -179,11 +179,11 @@
                                     </div>
                                 </candy-disabled>
                             </th> -->
-                            <th width="10%">Image</th>
-                            <th width="25%">Collection</th>
-                            <th width="19%">Display</th>
-                            <th width="19%">Purchasable</th>
-                            <th width="19%">Group</th>
+                            <th width="10%">{{$t('collection.Image')}}</th>
+                            <th width="25%">{{$t('collection.Collection')}}</th>
+                            <th width="19%">{{$t('collection.Display')}}</th>
+                            <th width="19%">{{$t('collection.Purchasable')}}</th>
+                            <th width="19%">{{$t('collection.Group')}}</th>
                         </tr>
                     </thead>
                     <tbody v-if="loaded">

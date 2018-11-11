@@ -61,14 +61,14 @@
     <div>
         <div class="row">
             <div class="col-xs-12 col-md-12">
-                <h4>Channels</h4>
+                <h4>{{$t('element.Channels')}}</h4>
                 <hr>
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>Channel</th>
-                        <th>Published</th>
-                        <th>Publish date</th>
+                        <th>{{$t('element.Channel')}}</th>
+                        <th>{{$t('element.Published')}}</th>
+                        <th>{{$t('element.PublishDate')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -90,7 +90,7 @@
                             <template v-if="channel.published_at">
                                 <flat-pickr class="datetimepicker" v-model="channel.published_at" :config="flatPickrConfig"></flat-pickr>
                             </template>
-                            <span class="input-alt text-muted" v-else>Never</span>
+                            <span class="input-alt text-muted" v-else>{{$t('element.Never')}}</span>
                         </td>
                     </tr>
                     </tbody>

@@ -60,23 +60,23 @@
 
 <template>
     <div>
-        <button class="btn btn-success" @click="createCollection = true"><i class="fa fa-plus fa-first" aria-hidden="true"></i> Add Collection</button>
-        <candy-modal title="Create Collection" v-show="createCollection" size="modal-md" @closed="createCollection = false">
+        <button class="btn btn-success" @click="createCollection = true"><i class="fa fa-plus fa-first" aria-hidden="true"></i> {{$t('collection.AddCollection')}}</button>
+        <candy-modal :title="$t('collection.CreateCollection')" v-show="createCollection" size="modal-md" @closed="createCollection = false">
             <div slot="body">
                 <div class="form-group">
-                    <label for="name">Collection name</label>
+                    <label for="name">{{$t('collection.CollectionName')}}</label>
                     <input type="text" class="form-control" id="name" v-model="name" @input="request.clearError('name')">
                     <span class="text-danger" v-if="request.getError('name')" v-text="request.getError('name')"></span>
                 </div>
                 <div class="form-group">
-                    <label for="redirectURL">Collection URL</label>
+                    <label for="redirectURL">{{$t('collection.CollectionURL')}}</label>
                     <input type="text" id="redirectURL" class="form-control" v-model="collection.url">
-                    <span class="text-info" v-if="collection.url">Your url will be sanitized to: <code>{{ url }}</code></span>
+                    <span class="text-info" v-if="collection.url">{{$t('collection.urlPrompt')}}: <code>{{ url }}</code></span>
                     <span class="text-danger" v-if="request.getError('url')" v-text="request.getError('url')"></span>
                 </div>
             </div>
             <template slot="footer">
-                <button type="button" class="btn btn-primary" @click="save">Create collection</button>
+                <button type="button" class="btn btn-primary" @click="save">{{$t('collection.CreateCollection')}}</button>
             </template>
         </candy-modal>
     </div>

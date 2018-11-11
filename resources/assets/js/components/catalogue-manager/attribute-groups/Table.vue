@@ -62,10 +62,10 @@
                     <thead>
                         <tr>
                             <th width="5%"></th>
-                            <th width="8%">ID</th>
-                            <th>Name</th>
-                            <th>Handle</th>
-                            <th>No. Attributes</th>
+                            <th width="8%">{{$t('attribute.ID')}}</th>
+                            <th>{{$t('attribute.name')}}</th>
+                            <th>{{$t('attribute.handle')}}</th>
+                            <th>{{$t('attribute.NoAttributes')}}</th>
                         </tr>
                     </thead>
                     <tbody v-if="loaded" v-sortable="sortableOptions">
