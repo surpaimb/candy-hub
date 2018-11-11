@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Orders',
+    'title' => trans('order.orders'),
 ])
 
 @section('side_menu')
@@ -7,8 +7,8 @@
 @endsection
 
 @section('header_title')
-    <small>Order Management</small>
-    <h1>Orders</h1>
+    <small>{{trans('order.title')}}</small>
+    <h1>{{trans('order.orders')}}</h1>
 @endsection
 
 @section('content')

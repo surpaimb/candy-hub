@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Edit Product',
+    'title' => trans('editProduct'),
 ])
 
 @section('side_menu')
@@ -7,12 +7,12 @@
 @endsection
 
 @section('header_title')
-    <small>Catalogue Manager</small>
+    <small>{{trans('catalogue.title')}}</small>
     <h1>@verbatim<template v-if="title">{{ title }}</template>@endverbatim</h1>
 @endsection
 
 @section('header_actions')
-    <candy-button style="display: inline-block;">Save Product</candy-button>
+    <candy-button style="display: inline-block;">{{trans('catalogue.save')}}</candy-button>
     <candy-delete
       element="product"
       endpoint="/products/{{ $id }}"

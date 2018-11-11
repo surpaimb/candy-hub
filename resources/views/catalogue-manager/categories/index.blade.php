@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Categories',
+    'title' => trans('catalogue.categories'),
 ])
 
 @section('side_menu')
@@ -7,7 +7,7 @@
 @endsection
 
 @section('header_title')
-    <small>Catalogue Manager</small>
+    <small>{{trans('catalogue.title')}}</small>
     <h1>Categories</h1>
 @endsection
 

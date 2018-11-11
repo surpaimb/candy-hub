@@ -14,5 +14,8 @@ return [
     'discounts' => 'Discounts',
     'customers' => 'Customers',
     'appTitle' => 'Puan Temple',
-    'appName' => 'Puan Temple'
+    'appName' => 'Puan Temple',
+    'dashboard' => 'Dashboard',
+    'logout' => 'Logout',
+
 ];

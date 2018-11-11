@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Create Discount',
+    'title' => trans('marketing.createDiscount'),
 ])
 
 
@@ -8,8 +8,8 @@
 @endsection
 
 @section('header_title')
-    <small>Marketing Suite</small>
-    <h1>Create Discount</h1>
+    <small>{{trans('marketing.title'}}</small>
+    <h1>{{trans('marketing.createDiscount')}}</h1>
 @endsection
 
 @section('content')
@@ -27,7 +27,7 @@
         <div class="tab-content sub-content section block">
             <div class="row">
                 <div class="col-md-12">
-                    Conditions
+                    {{trans('marketing.conditions')}}
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
         <div class="tab-content sub-content section block">
             <div class="row">
                 <div class="col-md-12">
-                    Rewards
+                    {{trans('marketing.rewards')}}
                 </div>
             </div>
         </div>

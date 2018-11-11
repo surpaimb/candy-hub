@@ -1,13 +1,13 @@
 @extends('hub::layout', [
-    'title' => 'Discounts',
+    'title' => trans('marketing.discounts'),
 ])
 @section('side_menu')
     @include('hub::marketing-suite.partials.side-menu')
 @endsection
 
 @section('header_title')
-    <small>Marketing Suite</small>
-    <h1>Discounts</h1>
+    <small>{{trans('marketing.title')}}</small>
+    <h1>{{trans('marketing.discounts')}}</h1>
 @endsection
 
 @section('header_actions')

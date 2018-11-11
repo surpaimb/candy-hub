@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Customer '
+    'title' => trans('customer')
 ])
 
 @section('side_menu')
@@ -7,13 +7,13 @@
 @endsection
 
 @section('header_title')
-    <small>Order Processing</small>
+    <small>{{trans('order.orderProcessing')}}</small>
     <h1>@verbatim<template v-if="title">{{ title }}</template>@endverbatim</h1>
 @endsection
 
 @section('header_actions')
     <candy-customer-impersonate customer-id="{{ $id }}" style="display: inline-block;" override="save-customer"></candy-customer-impersonate>
-    <candy-button style="display: inline-block;" override="save-customer">Save Customer</candy-button>
+    <candy-button style="display: inline-block;" override="save-customer">{{trans('order.save')}} {{trans('order.customer')}}</candy-button>
 @stop
 
 @section('content')

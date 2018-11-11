@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Order',
+    'title' => trans('order.order'),
 ])
 
 @section('side_menu')
@@ -7,12 +7,12 @@
 @endsection
 
 @section('header_title')
-    <small>Order Processing</small>
+    <small>{{trans('order.orderProcessing')}}</small>
     <h1>@verbatim<template v-if="title">{{ title }}</template>@endverbatim</h1>
 @endsection
 
 @section('header_actions')
-    <candy-button style="display: inline-block;" override="save-order">Save Order</candy-button>
+    <candy-button style="display: inline-block;" override="save-order">{{trans('order.save')}} {{trans('order.order')}}</candy-button>
 @stop
 
 

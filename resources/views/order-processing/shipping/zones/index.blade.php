@@ -5,8 +5,8 @@
 @endsection
 
 @section('header_title')
-    <small>Order Processing</small>
-    <h1>Shipping Zones</h1>
+    <small>{{trans('order.orderProcessing')}}</small>
+    <h1>{{trans('order.shippingZones')}}</h1>
 @endsection
 
 @section('header_actions')

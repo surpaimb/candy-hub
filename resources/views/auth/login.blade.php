@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="channel" content="@channel()">
-    <title>GetCandy - Login</title>
+    <title>{{trans('auth.title')}} - {{trans('auth.login')}}</title>
 
     <link rel="shortcut icon" type="image/png" href="/images/favicon.png">
 
@@ -34,7 +34,7 @@
     <div class="row">
       <div class="col-xs-12 col-md-5">
         <div class="login-form">
-          <img src="{{ url('hub/images/logo/getcandy.png') }}" class="logo" alt="普安寺">
+          <img src="{{ url('hub/images/logo/getcandy.png') }}" class="logo" alt="{{trans('auth.title')}}">
 
           @if(\Session::has('unauth'))
             <div class="alert alert-danger">
@@ -72,17 +72,17 @@
               <div class="col-xs-12 col-md-6">
                 <div class="checkbox">
                   <input id="rememberMe" type="checkbox">
-                  <label for="rememberMe"><span class="check"></span> <span class="faux-label">Remember Me</span></label>
+                  <label for="rememberMe"><span class="check"></span> <span class="faux-label">{{trans('auth.rememberMe')}}</span></label>
                 </div>
               </div>
               <div class="col-xs-12 col-md-6 text-right">
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary">{{trans('auth.login')}}</button>
               </div>
             </div>
           </form>
           <hr>
           <div class="text-center">
-            <a href="{{ route('password.request') }}" title="Forgotten your password?">Forgot your password?</a>
+            <a href="{{ route('password.request') }}" title="{{trans('auth.forgottenPassword')}}">{{trans('auth.forgottenPassword')}}</a>
           </div>
         </div>
       </div>

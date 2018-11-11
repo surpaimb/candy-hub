@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Edit Attribute Group',
+    'title' => trans('catalogue.editAttributeGroup'),
 ])
 
 @section('side_menu')
@@ -7,12 +7,12 @@
 @endsection
 
 @section('header_title')
-    <small>Settings</small>
+    <small>{{trans('catalogue.settings')}}</small>
     <h1>@verbatim<template v-if="title">{{ title }}</template>@endverbatim</h1>
 @endsection
 
 @section('header_actions')
-    <candy-button style="display: inline-block;" event="save-attribute">Save Attribute</candy-button>
+    <candy-button style="display: inline-block;" event="save-attribute">{{trans('catalogue.save')}}</candy-button>
 @stop
 
 

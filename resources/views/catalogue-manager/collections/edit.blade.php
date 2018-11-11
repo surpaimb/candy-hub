@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Edit Collection',
+    'title' => trans('catalogue.editCollection'),
 ])
 
 @section('side_menu')
@@ -7,7 +7,7 @@
 @endsection
 
 @section('header_title')
-    <small>Catalogue Manager</small>
+    <small>{{trans('catalogue.title')}}</small>
     <h1>@verbatim<template v-if="title">{{ title }}</template>@endverbatim</h1>
 @endsection
 
@@ -20,7 +20,7 @@
       redirect="/hub/catalogue-manager/collections"
       style="display: inline-block;"
     ></candy-delete>
-    <candy-button style="display: inline-block;" event="save-collection">Save Collection</candy-button>
+    <candy-button style="display: inline-block;" event="save-collection">{{trans('catalogue.save')}}</candy-button>
 @endsection
 
 @section('content')

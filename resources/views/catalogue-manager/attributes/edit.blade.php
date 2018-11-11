@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Edit Attribute',
+    'title' => trans('catalogue.editAttribute'),
 ])
 
 @section('side_menu')

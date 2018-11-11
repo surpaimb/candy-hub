@@ -8,7 +8,7 @@
 
 @section('header_title')
     <small>{{trans('titles.appName')}}</small>
-    <h1>Dashboard</h1>
+    <h1>{{trans('titles.dashboard')}}</h1>
 @endsection
 
 @section('content')
@@ -17,7 +17,7 @@
         <div class="col-md-3">
             <div class="panel">
                 <header class="panel-heading">
-                    <h3 class="panel-title">Sales this week</h3>
+                    <h3 class="panel-title">{{trans('dashboard.salesThisWeek')}}</h3>
                 </header>
                 <div class="panel-body">
                     <div class="dashboard-figure">
@@ -37,7 +37,7 @@
         <div class="col-md-3">
             <div class="panel">
                 <header class="panel-heading">
-                    <h3 class="panel-title">Orders this week</h3>
+                    <h3 class="panel-title">{{trans('dashboard.ordersThisWeek')}}</h3>
                 </header>
                 <div class="panel-body">
                     <div class="dashboard-figure">
@@ -57,7 +57,7 @@
         <div class="col-md-3">
             <div class="panel">
                 <header class="panel-heading">
-                    <h3 class="panel-title">Sales this month</h3>
+                    <h3 class="panel-title">{{trans('dashboard.salesThisMonth')}}</h3>
                 </header>
                 <div class="panel-body">
                     <div class="dashboard-figure">
@@ -77,7 +77,7 @@
         <div class="col-md-3">
             <div class="panel">
                 <header class="panel-heading">
-                    <h3 class="panel-title">Orders this month</h3>
+                    <h3 class="panel-title">{{trans('dashboard.ordersThisMonth')}}</h3>
                 </header>
                 <div class="panel-body">
                     <div class="dashboard-figure">
@@ -99,7 +99,7 @@
         <div class="col-md-6">
             <div class="panel">
                 <header class="panel-heading">
-                    <h3 class="panel-title">Orders totals for last 6 months</h3>
+                    <h3 class="panel-title">{{trans('dashboard.ordersTotalsForLast6Month')}}</h3>
                 </header>
                 <div class="panel-body">
                     <canvas id="monthSales"></canvas>
@@ -109,7 +109,7 @@
         <div class="col-md-6">
             <div class="panel">
                 <header class="panel-heading">
-                    <h3 class="panel-title">Orders / Sales for the previous 8 weeks</h3>
+                    <h3 class="panel-title">{{trans('dashboard.ordersThePrevious8Weeks')}}</h3>
                 </header>
                 <div class="panel-body">
                     <canvas id="canvas"></canvas>
@@ -187,7 +187,7 @@
                         label: function(tooltipItem, data) {
                             var label = tooltipItem.yLabel;
                             if (tooltipItem.datasetIndex == 1) {
-                                label = '£' + tooltipItem.yLabel.money();
+                                label = '￥' + tooltipItem.yLabel.money();
                             }
                             return data.datasets[tooltipItem.datasetIndex].label + ': ' + label;
                         }
@@ -223,7 +223,7 @@
                             ticks: {
                                 beginAtZero: true,
                                 callback: function(value, index, values) {
-                                    return '£' + value.money();
+                                    return '￥' + value.money();
                                 }
                             },
                             scaleLabel: {
@@ -253,7 +253,7 @@
                             label: function(tooltipItem, data) {
                                 var label = tooltipItem.yLabel;
                                 if (tooltipItem.datasetIndex == 0) {
-                                    label = '£' + tooltipItem.yLabel.money();
+                                    label = '￥' + tooltipItem.yLabel.money();
                                 }
                                 return data.datasets[tooltipItem.datasetIndex].label + ': ' + label;
                             }
@@ -264,7 +264,7 @@
                             ticks: {
                                 beginAtZero: true,
                                 callback: function(value, index, values) {
-                                    return '£' + value.money();
+                                    return '￥' + value.money();
                                 }
                             },
                             scaleLabel: {

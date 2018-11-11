@@ -45,6 +45,9 @@
                 if (typeof this.name == 'object') {
                      name = this.name[locale.current()];
                 }
+//                console.log(locale.current());
+//                console.log(this.name);
+//                console.log(name);
                 return '#' + name.toLowerCase().replace(/[^0-9a-zA-Z]+/g, '');
             }
         },

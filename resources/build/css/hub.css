@@ -17264,14 +17264,12 @@ textarea.bootstrap-tagsinput {
 }
 
 .sidebar .logo {
-  padding: 15px 34px;
-  height: 90px;
-  width: 210px;
+  padding: 5px 5px;
 }
 
 .sidebar .logo img {
   width: 85%;
-  margin-top: 5px;
+  margin-top: 15px;
 }
 
 .sidebar .logo .fa {
@@ -17356,7 +17354,7 @@ textarea.bootstrap-tagsinput {
 .content-panel {
   float: left;
   width: calc(100% - 250px);
-  min-width: 1100px;
+  min-width: 920px;
   margin-left: 250px;
 }
 

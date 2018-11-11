@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Shipping Methods',
+    'title' => trans('order.shippingMethods'),
 ])
 
 @section('side_menu')
@@ -7,8 +7,8 @@
 @endsection
 
 @section('header_title')
-    <small>Order Processing</small>
-    <h1>Shipping Methods</h1>
+    <small>{{trans('order.orderProcessing')}}</small>
+    <h1>{{trans('order.shippingMethods')}}</h1>
 @endsection
 
 @section('header_actions')

@@ -1,6 +1,6 @@
       <nav class="top-level">
         <div class="logo">
-            <img src="{{ url('hub/images/logo/getcandy_sm.png') }}" class="logo" alt="普安寺">
+            <img src="{{ url('hub/images/logo/getcandy_sm.png') }}" class="logo" alt="{{trans('titles.appTitle')}}">
           <i class="fa fa-angle-right" aria-hidden="true"></i>
         </div>
 

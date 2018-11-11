@@ -1,5 +1,5 @@
 @extends('hub::layout', [
-    'title' => 'Edit Discount',
+    'title' => trans('marketing.editDiscount'),
 ])
 
 @section('side_menu')
@@ -7,12 +7,12 @@
 @endsection
 
 @section('header_title')
-    <small>Marketing Suite</small>
-    <h1>Create Discount</h1>
+    <small>{{trans('marketing.title'}}</small>
+    <h1>{{trans('marketing.editDiscount')}}</h1>
 @endsection
 
 @section('header_actions')
-    <candy-button style="display: inline-block;" event="save-discount">Save Discount</candy-button>
+    <candy-button style="display: inline-block;" event="save-discount">{{trans('marketing.save')}} {{trans('marketing.discount')}}</candy-button>
 @stop
 
 @section('content')

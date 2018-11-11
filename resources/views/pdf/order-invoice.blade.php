@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>GetCandy</title>
+    <title>{{trans('pdf.title')}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
         body {
@@ -73,11 +73,11 @@
                             <tr>
                                 <td class="title" align="left" width="50%">
                                     <img src="{{ url('/images/logo.png') }}" width="100px">
-                                    <h3>Order Invoice</h3>
+                                    <h3>{{trans('pdf.orderInvoice')}}</h3>
                                 </td>
                                 <td align="right" width="50%">
-                                    Invoice: {{ @$order->invoice_reference }} <br>
-                                    Created: {{ $order->created_at }}<br>
+                                    {{trans('pdf.invoice')}}: {{ @$order->invoice_reference }} <br>
+                                    {{trans('pdf.created')}}: {{ $order->created_at }}<br>
                                 </td>
                             </tr>
                         </table>
@@ -91,7 +91,7 @@
                         <table width="100%">
                             <tr>
                                 <td align="left" width="33%">
-                                    <h3>Billing</h3>
+                                    <h3>{{trans('pdf.billing')}}</h3>
                                     {{ $order->billing_firstname }} {{ @$order->billing_lastname }}<br>
                                     {{ $order->billing_address }}
                                     @if ($order->billing_address_two)
@@ -106,12 +106,12 @@
                                     {{ $order->billing_zip }}<br>
                                     {{ $order->billing_country }}
                                     @if($order->vat_no)
-                                        <p>VAT No.: {{ $order->vat_no }}</p>
+                                        <p>{{trans('pdf.VATNo')}}: {{ $order->vat_no }}</p>
                                     @endif
                                 </td>
 
                                 <td align="left" width="33%">
-                                    <h3>Shipping</h3>
+                                    <h3>{{trans('pdf.shipping')}}</h3>
                                     {{ $order->shipping_firstname }} {{ @$order->shipping_lastname }}<br>
                                     {{ $order->shipping_address }}
                                     @if ($order->shipping_address_two)
@@ -135,10 +135,10 @@
                                     {{ $settings['address']['zip'] }}<br>
                                     {{ $settings['address']['country'] }}<br>
                                     @if($settings['tax']['vat_number'])
-                                    <p>VAT No.: {{ $settings['tax']['vat_number'] }}</p>
+                                    <p>{{trans('pdf.VATNo')}}: {{ $settings['tax']['vat_number'] }}</p>
                                     @endif
                                     @if($settings['contact']['telephone'])
-                                    <p>Tel No: {{ $settings['contact']['telephone'] }}</p>
+                                    <p>{{trans('pdf.telNo')}}: {{ $settings['contact']['telephone'] }}</p>
                                     @endif
                                 </td>
                             </tr>
@@ -151,28 +151,28 @@
                 <thead class="lines-heading">
                     <tr width="100%">
                         <th width="35%">
-                            Product
+                            {{trans('pdf.Product')}}
                         </th>
                         <th width="28%">
-                            SKU
+                            {{trans('pdf.SKU')}}
                         </th>
                         <th width="10%">
-                            Qty
+                            {{trans('pdf.Qty')}}
                         </th>
                         <th width="15%">
-                            Unit Price
+                            {{trans('pdf.unitPrice')}}
                         </th>
                         <th width="15%">
-                            Discount
+                            {{trans('pdf.discount')}}
                         </th>
                         <th width="15%">
-                            Tax Rate
+                            {{trans('pdf.taxRate')}}
                         </th>
                         <th width="15%">
-                            Tax Amount
+                            {{trans('pdf.taxAmount')}}
                         </th>
                         <th width="12%">
-                            Line Total
+                            {{trans('pdf.lineTotal')}}
                         </th>
                     </tr>
                 </thead>
@@ -212,9 +212,9 @@
                         @foreach ($order->discounts as $discount)
                             <tr class="discount-row">
                                 <td colspan="4">
-                                    <strong>{{ $discount->name }}</strong> @if($discount->type == 'percentage') @ {{ $discount->amount }}%@endif Discount<br>
+                                    <strong>{{ $discount->name }}</strong> @if($discount->type == 'percentage') @ {{ $discount->amount }}%@endif {{trans('pdf.discount')}}<br>
                                     @if ($discount->coupon)
-                                    Code: <code>{{ $discount->coupon }}</code>
+                                    {{trans('pdf.code')}}: <code>{{ $discount->coupon }}</code>
                                     @endif
                                 </td>
                                 <td>-{{ $order->currency == 'GBP' ? '&pound;' : '&euro;' }}{{ number_format($discount->total, 2) }}</td>
@@ -224,31 +224,31 @@
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2">
-                            <strong>Shipping</strong> <br>
+                            <strong>{{trans('pdf.shipping')}}</strong> <br>
                             <small>{{ $order->shipping_method }}</small>
                         </td>
                         <td>{!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($order->shipping_total / 100, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="5"></td>
-                        <td colspan="2"><strong>Sub Total</strong></td>
+                        <td colspan="2"><strong>{{trans('pdf.subTotal')}}</strong></td>
                         <td>{!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($order->sub_total / 100, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="5"></td>
-                        <td colspan="2"><strong>VAT</strong></td>
+                        <td colspan="2"><strong>{{trans('pdf.VAT')}}</strong></td>
                         <td>{!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($order->tax_total / 100, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="5"></td>
-                        <td colspan="2"><strong>Total</strong></td>
+                        <td colspan="2"><strong>{{trans('pdf.total')}}</strong></td>
                         <td>{!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format(($order->sub_total + $order->tax_total) / 100, 2) }}</td>
                     </tr>
                 </tfoot>
             </table>
 
             @if($order->notes)
-            <p><strong>Order Notes</strong><br>
+            <p><strong>{{trans('pdf.orderNotes')}}</strong><br>
             {{ $order->notes }}</p>
             <br>
             @endif

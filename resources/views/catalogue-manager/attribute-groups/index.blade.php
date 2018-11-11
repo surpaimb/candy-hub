@@ -1,13 +1,13 @@
 @extends('hub::layout', [
-    'title' => 'Attribute Groups',
+    'title' => trans('catalogue.attributeGroups'),
 ])
 @section('side_menu')
     @include('hub::catalogue-manager.partials.side-menu')
 @endsection
 
 @section('header_title')
-    <small>Catalogue Manager</small>
-    <h1>Attribute Groups</h1>
+    <small>{{trans('catalogue.title')}}</small>
+    <h1>{{trans('catalogue.attributeGroups')}}</h1>
 @endsection
 
 @section('header_actions')
