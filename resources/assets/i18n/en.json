@@ -1,6 +1,21 @@
 {
+  "common":{
+    "name":"GetCandy",
+    "title":"GetCandy",
+    "keys":"GetCandy,Shopping",
+    "cancel":"Cancel"
+  },
   "category":{
+    "title":"Category",
     "name":"Category Name",
-    "url": "Category URL"
+    "url": "Category URL",
+    "add":"Add Category",
+    "create": "Create Category",
+    "urlPrompt":"Your url will be sanitized to",
+    "save":"Create category",
+    "promptOne":"This category is a descendant of",
+    "search":"Search",
+    "listCreatePrompt":"Create Sub Category Under",
+    "createCategory":"Create Category"
   }
 }

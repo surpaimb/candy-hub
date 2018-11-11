@@ -50,7 +50,7 @@
                         <slot name="body"></slot>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default pull-left" @click="closeModal()">Cancel</button>
+                        <button type="button" class="btn btn-default pull-left" @click="closeModal()">{{$t('common.cancel')}}</button>
                         <slot name="footer">
                         </slot>
                     </div>

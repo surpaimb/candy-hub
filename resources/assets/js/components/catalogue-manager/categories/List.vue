@@ -216,8 +216,8 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-search" aria-hidden="true"></i>
                                 </span>
-                                <label class="sr-only" for="search">Search</label>
-                                <input type="text" class="form-control" id="search" placeholder="Search" @keyup="search" v-model="keywords">
+                                <label class="sr-only" for="search">{{$t('category.search')}}</label>
+                                <input type="text" class="form-control" id="search" :placeholder="$t('category.search')" @keyup="search" v-model="keywords">
                             </div>
                         </form>
                         <hr>
@@ -243,28 +243,28 @@
         </div>
 
         <!-- Create Category Modal -->
-        <candy-modal id="createCategoryModal" title="Create Category" size="modal-md" v-show="createModalOpen" @closed="closeCreateModal()">
+        <candy-modal id="createCategoryModal" :title="$t('category.create')" size="modal-md" v-show="createModalOpen" @closed="closeCreateModal()">
 
             <div slot="title">
-                <h4 v-if="createModalData['parent'].name" class="modal-title">Create Sub Category <small>Under {{ createModalData['parent'].name }}</small></h4>
-                <h4 v-else="" class="modal-title">Create Category</h4>
+                <h4 v-if="createModalData['parent'].name" class="modal-title">{{$t('category.listCreatePrompt')}}<small> {{ createModalData['parent'].name }}</small></h4>
+                <h4 v-else="" class="modal-title">{{$t('category.createCategory')}}</h4>
             </div>
 
             <div slot="body">
                 <div class="form-group">
-                    <label for="name">Name</label>
+                    <label for="name">{{$t('category.name')}}</label>
                     <input id="name" type="text" class="form-control" v-model="category.name" @input="slugify(category.name)">
                     <span class="text-danger" v-if="request.getError('attributes.0.value')" v-text="request.getError('attributes.0.value')"></span>
                 </div>
                 <div class="form-group">
-                    <label for="slug">URL</label>
+                    <label for="slug">{{$t('category.url')}}</label>
                     <input id="slug" type="text" class="form-control" v-model="category.slug" @change="slugify(category.slug)">
                     <span class="text-danger" v-if="request.getError('routes.0.slug')" v-text="request.getError('routes.0.slug')"></span>
                 </div>
             </div>
 
             <div slot="footer">
-                <button type="button" class="btn btn-primary" @click="createCategory()">Create Category</button>
+                <button type="button" class="btn btn-primary" @click="createCategory()">{{$t('category.createCategory')}}</button>
             </div>
 
         </candy-modal>

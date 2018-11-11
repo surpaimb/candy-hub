@@ -12,7 +12,7 @@
 @endsection
 
 @section('header_actions')
-    <candy-button style="display: inline-block;">{{trans('catalogue.save')}}</candy-button>
+    <candy-button style="display: inline-block;">{{trans('catalogue.save')}} {{trans('catalogue.product')}}</candy-button>
     <candy-delete
       element="product"
       endpoint="/products/{{ $id }}"

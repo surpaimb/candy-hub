@@ -64,7 +64,7 @@
                     includes: 'channels,layout,assets,assets.tags,children,parent,attribute_groups,attribute_groups.attributes,customer_groups,routes,products,children.products'
                 }).then(response => {
                     this.decorate(response.data);
-                    document.title = this.$options.filters.attribute(this.category, 'name') + ' Category - GetCandy';
+                    document.title = this.$options.filters.attribute(this.category, 'name') + $t('category.title') + ' - '+ $t('common.name');
                     this.loaded = true;
                     CandyEvent.$emit('title-changed', {
                         title: this.category
@@ -82,7 +82,7 @@
 
                 <div class="panel" v-if="category.parent">
                     <div class="panel-body">
-                        <i class="fa fa-info-circle text-info"></i> This category is a descendant of <a :href="url(category.parent.data.id)"><strong>{{ category.parent.data|attribute('name') }}</strong></a>
+                        <i class="fa fa-info-circle text-info"></i> {{$t('category.promptOne')}} <a :href="url(category.parent.data.id)"><strong>{{ category.parent.data|attribute('name') }}</strong></a>
                     </div>
                 </div>
 

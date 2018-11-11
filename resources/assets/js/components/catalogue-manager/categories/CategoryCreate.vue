@@ -58,8 +58,8 @@
 
 <template>
     <div>
-        <button class="btn btn-success" @click="create = true"><i class="fa fa-plus fa-first" aria-hidden="true"></i> Add Category</button>
-        <candy-modal title="Create Product" v-show="create" size="modal-md" @closed="create = false">
+        <button class="btn btn-success" @click="create = true"><i class="fa fa-plus fa-first" aria-hidden="true"></i> {{$t('category.add')}}</button>
+        <candy-modal :title="$t('category.create')" v-show="create" size="modal-md" @closed="create = false">
             <div slot="body">
                 <div class="form-group">
                     <label for="name">{{$t('category.name')}}</label>
@@ -69,12 +69,12 @@
                 <div class="form-group">
                     <label for="redirectURL">{{$t('category.url')}}</label>
                     <input type="text" id="redirectURL" class="form-control" v-model="model.url">
-                    <span class="text-info" v-if="model.url">Your url will be sanitized to: <code>{{ url }}</code></span>
+                    <span class="text-info" v-if="model.url">{{$t('category.urlPrompt')}}: <code>{{ url }}</code></span>
                     <span class="text-danger" v-if="request.getError('url')" v-text="request.getError('url')"></span>
                 </div>
             </div>
             <template slot="footer">
-                <button type="button" class="btn btn-primary" @click="save">Create category</button>
+                <button type="button" class="btn btn-primary" @click="save">{{$t('category.save')}}</button>
             </template>
         </candy-modal>
     </div>

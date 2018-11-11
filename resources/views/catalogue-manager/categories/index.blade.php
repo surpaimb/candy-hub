@@ -8,7 +8,7 @@
 
 @section('header_title')
     <small>{{trans('catalogue.title')}}</small>
-    <h1>Categories</h1>
+    <h1>{{trans('catalogue.categories')}}</h1>
 @endsection
 
 @section('header_actions')
