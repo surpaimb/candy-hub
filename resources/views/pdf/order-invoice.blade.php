@@ -192,17 +192,17 @@
                             {{ $item->quantity }}
                         </td>
                         <td>
-                            {!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($item->unit_price / 100, 2) }}
+                            {!! $order->currency == 'GBP' ? '&pound;' : '&yen;' !!}{{ number_format($item->unit_price / 100, 2) }}
                         </td>
                         <td>
-                            {!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($item->discount_total / 100, 2) }}
+                            {!! $order->currency == 'GBP' ? '&pound;' : '&yen;' !!}{{ number_format($item->discount_total / 100, 2) }}
                         </td>
                         <td>VAT @ {{ $item->tax_rate }}%</td>
                         <td>
-                            {!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($item->tax_total / 100, 2) }}
+                            {!! $order->currency == 'GBP' ? '&pound;' : '&yen;' !!}{{ number_format($item->tax_total / 100, 2) }}
                         </td>
                         <td align="right">
-                            {!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($item->line_total / 100, 2) }}
+                            {!! $order->currency == 'GBP' ? '&pound;' : '&yen;' !!}{{ number_format($item->line_total / 100, 2) }}
                         </td>
                     </tr>
                     @endforeach
@@ -217,7 +217,7 @@
                                     {{trans('pdf.code')}}: <code>{{ $discount->coupon }}</code>
                                     @endif
                                 </td>
-                                <td>-{{ $order->currency == 'GBP' ? '&pound;' : '&euro;' }}{{ number_format($discount->total, 2) }}</td>
+                                <td>-{{ $order->currency == 'GBP' ? '&pound;' : '&yen;' }}{{ number_format($discount->total, 2) }}</td>
                             </tr>
                         @endforeach
                     @endif
@@ -227,22 +227,22 @@
                             <strong>{{trans('pdf.shipping')}}</strong> <br>
                             <small>{{ $order->shipping_method }}</small>
                         </td>
-                        <td>{!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($order->shipping_total / 100, 2) }}</td>
+                        <td>{!! $order->currency == 'GBP' ? '&pound;' : '&yen;' !!}{{ number_format($order->shipping_total / 100, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>{{trans('pdf.subTotal')}}</strong></td>
-                        <td>{!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($order->sub_total / 100, 2) }}</td>
+                        <td>{!! $order->currency == 'GBP' ? '&pound;' : '&yen;' !!}{{ number_format($order->sub_total / 100, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>{{trans('pdf.VAT')}}</strong></td>
-                        <td>{!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format($order->tax_total / 100, 2) }}</td>
+                        <td>{!! $order->currency == 'GBP' ? '&pound;' : '&yen;' !!}{{ number_format($order->tax_total / 100, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="5"></td>
                         <td colspan="2"><strong>{{trans('pdf.total')}}</strong></td>
-                        <td>{!! $order->currency == 'GBP' ? '&pound;' : '&euro;' !!}{{ number_format(($order->sub_total + $order->tax_total) / 100, 2) }}</td>
+                        <td>{!! $order->currency == 'GBP' ? '&pound;' : '&yen;' !!}{{ number_format(($order->sub_total + $order->tax_total) / 100, 2) }}</td>
                     </tr>
                 </tfoot>
             </table>

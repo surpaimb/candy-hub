@@ -20,7 +20,7 @@
                 service: CurrencyService,
                 rate: 1,
                 currencies: [],
-                symbol: '&pound;'
+                symbol: '&yen;'
             }
         },
         mounted() {

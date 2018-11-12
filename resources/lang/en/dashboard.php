@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'pound'=>'&pound;',
     'salesThisWeek'   => 'Sales this week',
     'ordersThisWeek' => 'Orders this week',
     'salesThisMonth' => 'Sales this month',

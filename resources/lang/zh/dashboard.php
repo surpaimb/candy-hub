@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'pound'=>'&yen;',
     'salesThisWeek'   => '周销售统计',
     'ordersThisWeek' => '周订单统计',
     'salesThisMonth' => '月销售统计',
