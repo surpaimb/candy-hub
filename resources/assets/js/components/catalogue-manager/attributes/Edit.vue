@@ -1,68 +1,79 @@
 <script>
-    import EditableTable from './../../elements/tables/Editable.vue';
+import EditableTable from './../../elements/tables/Editable.vue';
 
-    export default {
-        data() {
-            return {
-                attribute : {},
-                loaded: false,
-                translating: false,
-                groups: [],
-                translationLanguage: locale.current(),
-                languages: [],
-                changeGroup: false,
-                fields: {},
-                params: {
-                    includes: 'group'
-                }
-            }
-        },
-        props: ['id'],
-        components: {
-            'editable-table' : EditableTable
-        },
-        mounted() {
-            this.loadLanguages();
-            this.loadGroups();
-            this.load();
-        },
-        methods: {
-            load() {
-                apiRequest.send('get', '/attributes/' + this.id, [], this.params)
-                    .then(response => {
-                        this.attribute = response.data;
-                        this.attribute.group_id = this.attribute.group.data.id;
-                        this.fields['name'] = {
-                            value: this.attribute.name,
-                            type: 'text',
-                            translatable: true
-                        };
-                        this.loaded = true;
-
-                        // document.title = this.$options.filters.attribute(, 'name') + ' Category - GetCandy';
-                    });
-            },
-            loadGroups() {
-                apiRequest.send('get', 'attribute-groups', [], []).then(response => {
-                    this.groups = response.data;
-                });
-            },
-            viewGroup(id) {
-                return route('hub.attribute-groups.edit', id);
-            },
-            loadLanguages() {
-                apiRequest.send('get', 'languages', [], []).then(response => {
-                    response.data.forEach(lang => {
-                        this.languages.push({
-                            label: lang.name,
-                            value: lang.lang,
-                            content: '<span class=\'flag-icon flag-icon-' + lang.iso + '\'></span> ' + lang.name
-                        });
-                    });
-                });
-            }
-        }
-    }
+export default {
+  data() {
+    return {
+      attribute: {},
+      loaded: false,
+      translating: false,
+      groups: [],
+      translationLanguage: locale.current(),
+      languages: [],
+      changeGroup: false,
+      fields: {},
+      params: {
+        includes: 'group',
+      },
+    };
+  },
+  props: ['id'],
+  components: {
+    'editable-table': EditableTable,
+  },
+  mounted() {
+    this.loadLanguages();
+    this.loadGroups();
+    this.load();
+  },
+  methods: {
+    save() {
+      console.log('Comming Soon');
+    },
+    load() {
+      apiRequest
+        .send('get', '/attributes/' + this.id, [], this.params)
+        .then(response => {
+          this.attribute = response.data;
+          this.attribute.group_id = this.attribute.group.data.id;
+          this.fields['name'] = {
+            value: this.attribute.name,
+            type: 'text',
+            translatable: true,
+          };
+          this.loaded = true;
+          document.title =
+            this.attribute.name[this.translationLanguage] + ' Attribute - Edit';
+          CandyEvent.$emit('title-changed', {
+            title: this.attribute.name[this.translationLanguage],
+          });
+        });
+    },
+    loadGroups() {
+      apiRequest.send('get', 'attribute-groups', [], []).then(response => {
+        this.groups = response.data;
+      });
+    },
+    viewGroup(id) {
+      return route('hub.attribute-groups.edit', id);
+    },
+    loadLanguages() {
+      apiRequest.send('get', 'languages', [], []).then(response => {
+        response.data.forEach(lang => {
+          this.languages.push({
+            label: lang.name,
+            value: lang.lang,
+            content:
+              "<span class='flag-icon flag-icon-" +
+              lang.iso +
+              "'></span> " +
+              lang.name,
+          });
+        });
+      });
+    },
+  },
+};
 </script>
 
 <template>
@@ -70,8 +81,8 @@
         <template v-if="loaded">
 
             <transition name="fade">
-                <candy-tabs initial="orderdetails">
-                    <candy-tab :name="$t('attribute.AttributeDetails')" handle="collection-details" dispatch="save-order" :selected="true">
+                <candy-tabs initial="attributedetails">
+                    <candy-tab :name="$t('attribute.AttributeDetails')" handle="attribute-details" :selected="true">
                         <div class="panel">
                             <div class="panel-body">
                                 <div class="row">
