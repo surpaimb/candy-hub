@@ -172,6 +172,7 @@
     "URLS": "URLS",
     "Collections": "Collections",
     "Categories": "Categories",
+    "CategoryDetails": "CategoryDetails",
     "Associations": "Associations",
     "Description": "Description",
     "Media": "Media",
@@ -298,8 +299,7 @@
     "AreYouSureRemoveCollection": "Are you sure you want to remove the <strong>{0}</strong> collection from this product?",
     "AreYouSureRemoveCategory": "Are you sure you want to remove the <strong>{0}</strong> category from this product?",
     "FieldsDependantOnService": "Fields below will show dependant on fulfillment service.",
-    "ChildrenCategories": "Children Categories",
-    "AvailabilitPricing": "AvailabilitPricing"
+    "ChildrenCategories": "Children Categories"
   },
   "forms": {
     "Translate": "Translate",

@@ -78,9 +78,9 @@ export default {
           this.decorate(response.data);
           document.title =
             this.$options.filters.attribute(this.category, 'name') +
-            $t('category.title') +
+            '- Category' +
             ' - ' +
-            $t('common.name');
+            'Tuple';
           this.loaded = true;
           CandyEvent.$emit('title-changed', {
             title: this.category,
@@ -118,7 +118,7 @@ export default {
                         <candy-media assetable="categories" :parent="category"></candy-media>
                     </candy-tab>
 
-                    <candy-tab :name="$t('product.AvailabilitPricing')" handle="category-availability" dispatch="category-availability">
+                    <candy-tab :name="$t('product.AvailabilityPricing')" handle="category-availability" dispatch="category-availability">
                         <candy-category-availability :category="category" v-if="category"></candy-category-availability>
                     </candy-tab>
 
